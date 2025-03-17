@@ -43,15 +43,15 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-database")
-    implementation("com.google.firebase:firebase-analytics")
+    //implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+    //implementation("com.google.firebase:firebase-auth")
+    //implementation("com.google.firebase:firebase-database")
+    //implementation("com.google.firebase:firebase-analytics")
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
 
     // Google Play Services para autenticación
-    implementation("com.google.android.gms:play-services-auth:21.3.0")
+    //implementation("com.google.android.gms:play-services-auth:21.3.0")
     implementation(libs.play.services.auth)
 }
