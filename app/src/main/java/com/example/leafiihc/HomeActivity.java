@@ -1,63 +1,73 @@
 package com.example.leafiihc;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private TextView tvBienvenida;
-    private Button btnCerrarSesion;
-
-    private FirebaseAuth mAuth;
+    private LinearLayout llAreasVerdes, llEnciclopedia, llConsejos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
-        // Inicializar Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
-
         // Inicializar vistas
-        tvBienvenida = findViewById(R.id.tvBienvenida);
-        btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
+        llAreasVerdes = findViewById(R.id.llAreasVerdes);
+        llEnciclopedia = findViewById(R.id.llEnciclopedia);
+        llConsejos = findViewById(R.id.llConsejos);
 
-        // Obtener usuario actual
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        if (currentUser != null) {
-            // Mostrar mensaje de bienvenida con el nombre del usuario
-            String nombre = currentUser.getDisplayName();
-            if (nombre != null && !nombre.isEmpty()) {
-                tvBienvenida.setText("¡Bienvenido/a, " + nombre + "!");
-            } else {
-                tvBienvenida.setText("¡Bienvenido/a!");
-            }
-        }
-
-        // Configurar listener para el botón de cerrar sesión
-        btnCerrarSesion.setOnClickListener(new View.OnClickListener() {
+        // Configurar listeners para las opciones del menú
+        llAreasVerdes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cerrarSesion();
+                Toast.makeText(HomeActivity.this, "Áreas verdes seleccionado", Toast.LENGTH_SHORT).show();
+                // Aquí puedes iniciar la actividad correspondiente
+                // Intent intent = new Intent(HomeActivity.this, AreasVerdesActivity.class);
+                // startActivity(intent);
             }
+        });
+
+        llEnciclopedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, EnciclopediaActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        llConsejos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(HomeActivity.this, "Consejos seleccionado", Toast.LENGTH_SHORT).show();
+                // Aquí puedes iniciar la actividad correspondiente
+                // Intent intent = new Intent(HomeActivity.this, ConsejosActivity.class);
+                // startActivity(intent);
+            }
+        });
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
         });
     }
 
-    private void cerrarSesion() {
-        // Cerrar sesión en Firebase
-        mAuth.signOut();
-
-        // Volver a la pantalla de inicio de sesión
-        Intent intent = new Intent(HomeActivity.this, Principal.class);
-        startActivity(intent);
-        finish();
+    @Override
+    public void onBackPressed() {
+        // Mostrar diálogo de confirmación para salir de la aplicación
+        // en lugar de volver a la pantalla de login
+        super.onBackPressed();
+        finishAffinity();
     }
 }

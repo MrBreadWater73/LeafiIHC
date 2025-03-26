@@ -1,55 +1,35 @@
 package com.example.leafiihc;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
-import java.util.Map;
-
 public class RegistroActivity extends AppCompatActivity {
 
-    private EditText etNombre, etEmail, etUsuario, etPassword, etConfirmPassword;
+    private EditText etNombre, etEmail, etUsuarioRegistro, etPasswordRegistro, etConfirmPassword;
     private Button btnRegistrar;
-    private TextView tvYaTienesCuenta;
-
-    private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
+    private TextView tvIniciarSesion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
-        // Inicializar Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
         // Inicializar vistas
         etNombre = findViewById(R.id.etNombre);
         etEmail = findViewById(R.id.etEmail);
-        etUsuario = findViewById(R.id.etUsuarioRegistro);
-        etPassword = findViewById(R.id.etPasswordRegistro);
+        etUsuarioRegistro = findViewById(R.id.etUsuarioRegistro);
+        etPasswordRegistro = findViewById(R.id.etPasswordRegistro);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         btnRegistrar = findViewById(R.id.btnRegistrar);
-        tvYaTienesCuenta = findViewById(R.id.tvYaTienesCuenta);
+        tvIniciarSesion = findViewById(R.id.tvIniciarSesion);
 
         // Configurar listener para el botón de registro
         btnRegistrar.setOnClickListener(new View.OnClickListener() {
@@ -59,22 +39,22 @@ public class RegistroActivity extends AppCompatActivity {
             }
         });
 
-        // Configurar listener para el texto de ya tienes cuenta
-        tvYaTienesCuenta.setOnClickListener(new View.OnClickListener() {
+        // Configurar listener para el texto de iniciar sesión
+        tvIniciarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Volver a la pantalla de inicio de sesión
-                finish();
+                finish(); // Cierra esta actividad y vuelve a la anterior
             }
         });
     }
 
     private void registrarUsuario() {
-        // Obtener valores de los campos
-        final String nombre = etNombre.getText().toString().trim();
-        final String email = etEmail.getText().toString().trim();
-        final String usuario = etUsuario.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
+        // Obtener texto de los campos
+        String nombre = etNombre.getText().toString().trim();
+        String email = etEmail.getText().toString().trim();
+        String usuario = etUsuarioRegistro.getText().toString().trim();
+        String password = etPasswordRegistro.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
         // Validar campos
@@ -88,18 +68,28 @@ public class RegistroActivity extends AppCompatActivity {
             return;
         }
 
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            etEmail.setError("Ingresa un correo electrónico válido");
+            return;
+        }
+
         if (TextUtils.isEmpty(usuario)) {
-            etUsuario.setError("Ingresa un nombre de usuario");
+            etUsuarioRegistro.setError("Ingresa un nombre de usuario");
             return;
         }
 
         if (TextUtils.isEmpty(password)) {
-            etPassword.setError("Ingresa una contraseña");
+            etPasswordRegistro.setError("Ingresa una contraseña");
             return;
         }
 
         if (password.length() < 6) {
-            etPassword.setError("La contraseña debe tener al menos 6 caracteres");
+            etPasswordRegistro.setError("La contraseña debe tener al menos 6 caracteres");
+            return;
+        }
+
+        if (TextUtils.isEmpty(confirmPassword)) {
+            etConfirmPassword.setError("Confirma tu contraseña");
             return;
         }
 
@@ -108,42 +98,22 @@ public class RegistroActivity extends AppCompatActivity {
             return;
         }
 
-        // Registrar usuario en Firebase
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Registro exitoso
-                            FirebaseUser user = mAuth.getCurrentUser();
+        // Aquí implementarías la lógica de registro
+        // Por ejemplo, guardar en una base de datos local o enviar a un servidor
 
-                            // Actualizar perfil del usuario
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                    .setDisplayName(nombre)
-                                    .build();
+        // Simulación de registro exitoso
+        Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show();
 
-                            user.updateProfile(profileUpdates);
+        // Volver a la pantalla de inicio de sesión con el usuario registrado
+        Intent intent = new Intent();
+        intent.putExtra("USUARIO_REGISTRADO", usuario);
+        setResult(RESULT_OK, intent);
+        finish(); // Cierra esta actividad y vuelve a LoginActivity
+    }
 
-                            // Guardar información adicional en la base de datos
-                            Map<String, Object> userData = new HashMap<>();
-                            userData.put("nombre", nombre);
-                            userData.put("email", email);
-                            userData.put("usuario", usuario);
-
-                            mDatabase.child("usuarios").child(user.getUid()).setValue(userData);
-
-                            Toast.makeText(RegistroActivity.this, "Registro exitoso", Toast.LENGTH_SHORT).show();
-
-                            // Ir a la pantalla principal o de inicio
-                            Intent intent = new Intent(RegistroActivity.this, HomeActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            // Si falla el registro
-                            Toast.makeText(RegistroActivity.this, "Error en el registro: " + task.getException().getMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+    @Override
+    public void onBackPressed() {
+        // Simplemente volvemos a la actividad anterior (LoginActivity)
+        super.onBackPressed();
     }
 }
