@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class EnciclopediaActivity extends AppCompatActivity implements PlantaAdapter.OnPlantaClickListener {
 
     private RecyclerView rvPlantas;
@@ -35,6 +37,16 @@ public class EnciclopediaActivity extends AppCompatActivity implements PlantaAda
         etSearch = findViewById(R.id.etSearch);
         tvEmptyState = findViewById(R.id.tvEmptyState);
         ivHome = findViewById(R.id.ivHome);
+
+        // Añadir este código en el metodo onCreate después de inicializar las vistas
+        CircleImageView ivUserAvatar = findViewById(R.id.ivUserAvatar);
+        ivUserAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EnciclopediaActivity.this, PerfilUsuarioActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Configurar RecyclerView
         rvPlantas.setLayoutManager(new LinearLayoutManager(this));

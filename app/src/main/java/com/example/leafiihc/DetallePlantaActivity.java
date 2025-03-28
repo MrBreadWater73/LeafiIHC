@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class DetallePlantaActivity extends AppCompatActivity {
 
     private TextView tvPlantaNombre, tvPlantaNombreCientifico, tvPlantaDescripcion;
@@ -29,6 +31,18 @@ public class DetallePlantaActivity extends AppCompatActivity {
         ivPlantaImagen = findViewById(R.id.ivPlantaImagen);
         ivBack = findViewById(R.id.ivBack);
         ivHome = findViewById(R.id.ivHome);
+
+        // Añadir este código en el metodo onCreate después de inicializar las vistas
+        CircleImageView ivUserAvatar = findViewById(R.id.ivUserAvatar);
+        if (ivUserAvatar != null) {
+            ivUserAvatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DetallePlantaActivity.this, PerfilUsuarioActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
 
         // Obtener datos de la planta del intent
         if (getIntent().hasExtra("NOMBRE_PLANTA")) {

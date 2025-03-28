@@ -12,6 +12,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class HomeActivity extends AppCompatActivity {
 
     private LinearLayout llAreasVerdes, llEnciclopedia, llConsejos;
@@ -26,6 +28,16 @@ public class HomeActivity extends AppCompatActivity {
         llAreasVerdes = findViewById(R.id.llAreasVerdes);
         llEnciclopedia = findViewById(R.id.llEnciclopedia);
         llConsejos = findViewById(R.id.llConsejos);
+
+        // Añadir este código en el metodo onCreate después de inicializar las vistas
+        CircleImageView ivUserAvatar = findViewById(R.id.ivUserAvatar);
+        ivUserAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, PerfilUsuarioActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Configurar listeners para las opciones del menú
         llAreasVerdes.setOnClickListener(new View.OnClickListener() {
@@ -49,10 +61,8 @@ public class HomeActivity extends AppCompatActivity {
         llConsejos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(HomeActivity.this, "Consejos seleccionado", Toast.LENGTH_SHORT).show();
-                // Aquí puedes iniciar la actividad correspondiente
-                // Intent intent = new Intent(HomeActivity.this, ConsejosActivity.class);
-                // startActivity(intent);
+                Intent intent = new Intent(HomeActivity.this, ConsejosActivity.class);
+                startActivity(intent);
             }
         });
 
