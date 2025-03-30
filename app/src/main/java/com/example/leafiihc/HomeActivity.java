@@ -43,10 +43,8 @@ public class HomeActivity extends AppCompatActivity {
         llAreasVerdes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(HomeActivity.this, "Áreas verdes seleccionado", Toast.LENGTH_SHORT).show();
-                // Aquí puedes iniciar la actividad correspondiente
-                // Intent intent = new Intent(HomeActivity.this, AreasVerdesActivity.class);
-                // startActivity(intent);
+                Intent intent = new Intent(HomeActivity.this, AreasVerdesActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -75,9 +73,8 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Mostrar diálogo de confirmación para salir de la aplicación
-        // en lugar de volver a la pantalla de login
+        // Mostrar diálogo de confirmación
+        Toast.makeText(this, "¿Desea salir de la aplicación?", Toast.LENGTH_SHORT).show();
         super.onBackPressed();
-        finishAffinity();
     }
 }

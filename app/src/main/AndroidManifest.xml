@@ -13,10 +13,19 @@
         android:theme="@style/Theme.LeafiIHC"
         tools:targetApi="31">
         <activity
-            android:name=".PerfilUsuarioActivity"
+            android:name=".ConsejosActivity"
             android:exported="false" />
         <activity
-            android:name=".ConsejosActivity"
+            android:name=".AreasVerdesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VerAreasVerdesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DetalleAreaVerdeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PerfilUsuarioActivity"
             android:exported="false" />
         <activity
             android:name=".DetallePlantaActivity"

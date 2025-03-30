@@ -1,45 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dp">
-
-    <CheckBox
-        android:id="@+id/cbTarea"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:buttonTint="#4CAF50" />
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="12dp">
 
-        <TextView
-            android:id="@+id/tvTareaTitulo"
+        <CheckBox
+            android:id="@+id/cbTareaCompletada"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Regar las plantas"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
+            android:layout_gravity="center_vertical" />
 
-        <TextView
-            android:id="@+id/tvTareaDescripcion"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Regar todas las plantas de interior"
-            android:textColor="#757575"
-            android:textSize="14sp" />
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:id="@+id/tvTituloTarea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Título de la tarea"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvDescripcionTarea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Descripción de la tarea"
+                android:textColor="#757575"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/tvCategoriaTarea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categoría"
+                    android:textColor="#2196F3"
+                    android:textSize="12sp"
+                    android:background="@drawable/tag_background"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp" />
+
+                <TextView
+                    android:id="@+id/tvFechaVencimiento"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="15/05/2023"
+                    android:textColor="#757575"
+                    android:textSize="12sp"
+                    android:layout_marginStart="8dp" />
+
+                <TextView
+                    android:id="@+id/tvPrioridadTarea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Alta"
+                    android:textColor="#F44336"
+                    android:textSize="12sp"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivEliminarTarea"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_clear"
+            android:layout_gravity="center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="2dp" />
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/ivTareaNotification"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/ic_notification"
-        app:tint="#757575" />
-</LinearLayout>
+</androidx.cardview.widget.CardView>
