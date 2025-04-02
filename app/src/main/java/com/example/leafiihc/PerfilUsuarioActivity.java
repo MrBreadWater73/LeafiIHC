@@ -15,7 +15,9 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.gson.Gson;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -60,33 +62,17 @@ public class PerfilUsuarioActivity extends AppCompatActivity {
         cargarDatosUsuario();
 
         // Configurar listeners
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
+        ivBack.setOnClickListener(v -> {
+            Intent intent = new Intent(PerfilUsuarioActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
         });
 
-        tvGuardar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                guardarDatosUsuario();
-            }
-        });
+        tvGuardar.setOnClickListener(v -> guardarDatosUsuario());
 
-        ivEditPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                abrirSelectorImagen();
-            }
-        });
+        ivEditPhoto.setOnClickListener(v -> abrirSelectorImagen());
 
-        btnCerrarSesion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cerrarSesion();
-            }
-        });
+        btnCerrarSesion.setOnClickListener(v -> cerrarSesion());
     }
 
     private void cargarDatosUsuario() {

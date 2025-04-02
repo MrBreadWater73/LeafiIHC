@@ -12,11 +12,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends AppCompatActivity {
 
     private LinearLayout llAreasVerdes, llEnciclopedia, llConsejos;
+    private BottomNavigationView bottomNavBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,40 +30,49 @@ public class HomeActivity extends AppCompatActivity {
         llAreasVerdes = findViewById(R.id.llAreasVerdes);
         llEnciclopedia = findViewById(R.id.llEnciclopedia);
         llConsejos = findViewById(R.id.llConsejos);
+        bottomNavBar = findViewById(R.id.bottomNavBar);
+
+        // Configurar BottomNavigationView
+        bottomNavBar.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.navigation_home) {
+                // Ya estamos en Home, no hacer nada
+                return true;
+            } else if (itemId == R.id.navigation_plants) {
+                Intent intent = new Intent(HomeActivity.this, EnciclopediaActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            } else if (itemId == R.id.navigation_profile) {
+                Intent intent = new Intent(HomeActivity.this, PerfilUsuarioActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            return false;
+        });
 
         // Añadir este código en el metodo onCreate después de inicializar las vistas
         CircleImageView ivUserAvatar = findViewById(R.id.ivUserAvatar);
-        ivUserAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, PerfilUsuarioActivity.class);
-                startActivity(intent);
-            }
+        ivUserAvatar.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, PerfilUsuarioActivity.class);
+            startActivity(intent);
         });
 
         // Configurar listeners para las opciones del menú
-        llAreasVerdes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, AreasVerdesActivity.class);
-                startActivity(intent);
-            }
+        llAreasVerdes.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, AreasVerdesActivity.class);
+            startActivity(intent);
         });
 
-        llEnciclopedia.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, EnciclopediaActivity.class);
-                startActivity(intent);
-            }
+        llEnciclopedia.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, EnciclopediaActivity.class);
+            startActivity(intent);
         });
 
-        llConsejos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, ConsejosActivity.class);
-                startActivity(intent);
-            }
+        llConsejos.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, ConsejosActivity.class);
+            startActivity(intent);
         });
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {

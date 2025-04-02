@@ -120,7 +120,7 @@
                         android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/ic_seguimiento"
-                        android:tint="@color/colorPrimary" />
+                        app:tint="@color/colorPrimary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -170,7 +170,7 @@
                         android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/ic_encyclopedia"
-                        android:tint="@color/colorPrimary" />
+                        app:tint="@color/colorPrimary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -220,7 +220,7 @@
                         android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/ic_tips"
-                        android:tint="@color/colorPrimary" />
+                        app:tint="@color/colorPrimary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>

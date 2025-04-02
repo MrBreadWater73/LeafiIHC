@@ -30,4 +30,12 @@
     
     <!-- Disabled State -->
     <color name="colorDisabled">#BDBDBD</color>
+
+    <!-- Dark Mode Colors -->
+    <color name="colorBackgroundDark">#121212</color>
+    <color name="colorSurfaceDark">#1E1E1E</color>
+    <color name="colorCardBackgroundDark">#2D2D2D</color>
+    <color name="colorTextPrimaryDark">#FFFFFF</color>
+    <color name="colorTextSecondaryDark">#B3FFFFFF</color>
+    <color name="colorTextHintDark">#80FFFFFF</color>
 </resources>
