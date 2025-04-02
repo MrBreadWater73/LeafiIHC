@@ -1,5 +1,6 @@
 package com.example.leafiihc;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,16 +12,26 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
+
 public class RegistroActivity extends AppCompatActivity {
 
     private EditText etNombre, etEmail, etUsuarioRegistro, etPasswordRegistro, etConfirmPassword;
     private Button btnRegistrar;
     private TextView tvIniciarSesion;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
 
         // Inicializar vistas
         etNombre = findViewById(R.id.etNombre);
@@ -43,14 +54,12 @@ public class RegistroActivity extends AppCompatActivity {
         tvIniciarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Volver a la pantalla de inicio de sesión
-                finish(); // Cierra esta actividad y vuelve a la anterior
+                finish();
             }
         });
     }
 
     private void registrarUsuario() {
-        // Obtener texto de los campos
         String nombre = etNombre.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String usuario = etUsuarioRegistro.getText().toString().trim();
@@ -98,22 +107,54 @@ public class RegistroActivity extends AppCompatActivity {
             return;
         }
 
-        // Aquí implementarías la lógica de registro
-        // Por ejemplo, guardar en una base de datos local o enviar a un servidor
+        // Crear usuario con Firebase Auth
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Actualizar el perfil del usuario con el nombre
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(nombre)
+                                    .build();
 
-        // Simulación de registro exitoso
-        Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show();
-
-        // Volver a la pantalla de inicio de sesión con el usuario registrado
-        Intent intent = new Intent();
-        intent.putExtra("USUARIO_REGISTRADO", usuario);
-        setResult(RESULT_OK, intent);
-        finish(); // Cierra esta actividad y vuelve a LoginActivity
+                            mAuth.getCurrentUser().updateProfile(profileUpdates)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(RegistroActivity.this, "Registro exitoso", Toast.LENGTH_SHORT).show();
+                                                
+                                                // Volver a la pantalla de inicio de sesión con el usuario registrado
+                                                Intent intent = new Intent();
+                                                intent.putExtra("USUARIO_REGISTRADO", email);
+                                                setResult(RESULT_OK, intent);
+                                                finish();
+                                            } else {
+                                                Toast.makeText(RegistroActivity.this, "Error al actualizar el perfil", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        } else {
+                            String errorMessage = "Error en el registro";
+                            if (task.getException() != null) {
+                                String exceptionMessage = task.getException().getMessage();
+                                if (exceptionMessage != null) {
+                                    if (exceptionMessage.contains("email address is already in use")) {
+                                        errorMessage = "El correo electrónico ya está registrado";
+                                    } else if (exceptionMessage.contains("password is invalid")) {
+                                        errorMessage = "La contraseña es inválida";
+                                    }
+                                }
+                            }
+                            Toast.makeText(RegistroActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     @Override
     public void onBackPressed() {
-        // Simplemente volvemos a la actividad anterior (LoginActivity)
         super.onBackPressed();
     }
 }

@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LeafiIHC</string>
+    <string name="default_web_client_id">973399110725-9fmou69fhvhtdpg6ridn3454d1trp0dn.apps.googleusercontent.com</string>
 </resources>

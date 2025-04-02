@@ -17,7 +17,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -36,11 +40,15 @@ public class PerfilUsuarioActivity extends AppCompatActivity {
 
     private Usuario usuario;
     private Uri imagenSeleccionada;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil_usuario);
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
 
         // Inicializar vistas
         ivBack = findViewById(R.id.ivBack);
@@ -76,42 +84,51 @@ public class PerfilUsuarioActivity extends AppCompatActivity {
     }
 
     private void cargarDatosUsuario() {
-        // En una aplicación real, estos datos vendrían de una base de datos o API
-        // Para este ejemplo, usaremos SharedPreferences para simular persistencia
-        
-        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String usuarioJson = prefs.getString("usuario", "");
-        
-        if (!usuarioJson.isEmpty()) {
-            Gson gson = new Gson();
-            usuario = gson.fromJson(usuarioJson, Usuario.class);
-        } else {
-            // Si no hay datos guardados, crear un usuario de ejemplo
-            usuario = new Usuario("Juan", "Pérez", "juan.perez@ejemplo.com", "123456789");
-        }
-        
-        // Mostrar datos en la UI
-        tvUserName.setText(usuario.getNombreCompleto());
-        tvUserEmail.setText(usuario.getEmail());
-        
-        etNombre.setText(usuario.getNombre());
-        etApellido.setText(usuario.getApellido());
-        etEmail.setText(usuario.getEmail());
-        etTelefono.setText(usuario.getTelefono());
-        
-        switchNotificaciones.setChecked(usuario.isRecibirNotificaciones());
-        switchConsejosDiarios.setChecked(usuario.isConsejosDiarios());
-        switchTemaOscuro.setChecked(usuario.isTemaOscuro());
-        
-        // Si hay una foto de perfil guardada, cargarla
-        if (!usuario.getFotoPerfil().isEmpty()) {
-            try {
-                Uri fotoUri = Uri.parse(usuario.getFotoPerfil());
-                ivUserProfilePic.setImageURI(fotoUri);
-            } catch (Exception e) {
-                // Si hay un error, usar la imagen por defecto
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            // Obtener datos del usuario de Firebase
+            String displayName = currentUser.getDisplayName();
+            String email = currentUser.getEmail();
+            Uri photoUrl = currentUser.getPhotoUrl();
+
+            // Separar nombre y apellido si es posible
+            String nombre = "", apellido = "";
+            if (displayName != null) {
+                String[] nombres = displayName.split(" ", 2);
+                nombre = nombres[0];
+                apellido = nombres.length > 1 ? nombres[1] : "";
+            }
+
+            // Crear o actualizar objeto usuario
+            usuario = new Usuario(nombre, apellido, email, "");
+            
+            // Mostrar datos en la UI
+            tvUserName.setText(usuario.getNombreCompleto());
+            tvUserEmail.setText(usuario.getEmail());
+            
+            etNombre.setText(usuario.getNombre());
+            etApellido.setText(usuario.getApellido());
+            etEmail.setText(usuario.getEmail());
+            
+            // Cargar foto de perfil si existe
+            if (photoUrl != null) {
+                usuario.setFotoPerfil(photoUrl.toString());
+                // Usar Glide para cargar la imagen
+                Glide.with(this)
+                    .load(photoUrl)
+                    .apply(RequestOptions.circleCropTransform())
+                    .placeholder(R.drawable.ic_user)
+                    .error(R.drawable.ic_user)
+                    .into(ivUserProfilePic);
+            } else {
+                // Si no hay foto, mostrar imagen por defecto
                 ivUserProfilePic.setImageResource(R.drawable.ic_user);
             }
+        } else {
+            // Si no hay usuario autenticado, redirigir al login
+            Intent intent = new Intent(PerfilUsuarioActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 
@@ -164,14 +181,8 @@ public class PerfilUsuarioActivity extends AppCompatActivity {
     }
 
     private void cerrarSesion() {
-        // En una aplicación real, aquí se cerraría la sesión del usuario
-        // Para este ejemplo, simplemente volvemos a la pantalla de login
-        
-        // Limpiar SharedPreferences
-        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.clear();
-        editor.apply();
+        // Cerrar sesión en Firebase
+        mAuth.signOut();
         
         // Volver a la pantalla de login
         Intent intent = new Intent(PerfilUsuarioActivity.this, LoginActivity.class);

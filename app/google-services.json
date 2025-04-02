@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "973399110725",
+    "project_id": "leafi-f1458",
+    "storage_bucket": "leafi-f1458.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973399110725:android:79bb7f2b09e69584f45f2c",
+        "android_client_info": {
+          "package_name": "com.example.leafiihc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "973399110725-jjh30oi1omdkbo2l4jnipug6i8iuo6d1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.leafiihc",
+            "certificate_hash": "6eb787fb8cae5a8f01db9286f019fc14c14a8191"
+          }
+        },
+        {
+          "client_id": "973399110725-9fmou69fhvhtdpg6ridn3454d1trp0dn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLDDvxMOMjVu1u50G4I2DBUOUbfUaazqk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "973399110725-9fmou69fhvhtdpg6ridn3454d1trp0dn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
