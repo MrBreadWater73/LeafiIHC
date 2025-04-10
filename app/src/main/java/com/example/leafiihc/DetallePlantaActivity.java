@@ -8,13 +8,25 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+import com.bumptech.glide.Glide;
 
 public class DetallePlantaActivity extends AppCompatActivity {
 
-    private TextView tvPlantaNombre, tvPlantaNombreCientifico, tvPlantaDescripcion;
-    private TextView tvRiego, tvLuz, tvTemperatura;
-    private ImageView ivPlantaImagen, ivBack, ivHome;
+    private ImageView ivPlanta;
+    private TextView tvNombrePlanta;
+    private TextView tvNombreCientifico;
+    private TextView tvDescripcion;
+    private TextView tvFamilia;
+    private TextView tvGenero;
+    private TextView tvRiego;
+    private TextView tvLuz;
+    private TextView tvTemperatura;
+    private TextView tvCuidados;
+    private TextView tvToxicidad;
+    private TextView tvCrecimiento;
+    private TextView tvPropagacion;
+    private ImageView ivBack;
+    private ImageView ivHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,109 +34,72 @@ public class DetallePlantaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detalle_planta);
 
         // Inicializar vistas
-        tvPlantaNombre = findViewById(R.id.tvPlantaNombre);
-        tvPlantaNombreCientifico = findViewById(R.id.tvPlantaNombreCientifico);
-        tvPlantaDescripcion = findViewById(R.id.tvPlantaDescripcion);
+        ivPlanta = findViewById(R.id.ivPlanta);
+        tvNombrePlanta = findViewById(R.id.tvNombrePlanta);
+        tvNombreCientifico = findViewById(R.id.tvNombreCientifico);
+        tvDescripcion = findViewById(R.id.tvDescripcion);
+        tvFamilia = findViewById(R.id.tvFamilia);
+        tvGenero = findViewById(R.id.tvGenero);
         tvRiego = findViewById(R.id.tvRiego);
         tvLuz = findViewById(R.id.tvLuz);
         tvTemperatura = findViewById(R.id.tvTemperatura);
-        ivPlantaImagen = findViewById(R.id.ivPlantaImagen);
+        tvCuidados = findViewById(R.id.tvCuidados);
+        tvToxicidad = findViewById(R.id.tvToxicidad);
+        tvCrecimiento = findViewById(R.id.tvCrecimiento);
+        tvPropagacion = findViewById(R.id.tvPropagacion);
         ivBack = findViewById(R.id.ivBack);
         ivHome = findViewById(R.id.ivHome);
 
-        // Añadir este código en el metodo onCreate después de inicializar las vistas
-        CircleImageView ivUserAvatar = findViewById(R.id.ivUserAvatar);
-        if (ivUserAvatar != null) {
-            ivUserAvatar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(DetallePlantaActivity.this, PerfilUsuarioActivity.class);
-                    startActivity(intent);
-                }
-            });
-        }
+        // Obtener datos del intent
+        Intent intent = getIntent();
+        String nombrePlanta = intent.getStringExtra("NOMBRE_PLANTA");
+        String nombreCientifico = intent.getStringExtra("NOMBRE_CIENTIFICO");
+        String descripcion = intent.getStringExtra("DESCRIPCION");
+        int imagenResourceId = intent.getIntExtra("IMAGEN_ID", R.drawable.ic_plants);
+        String familia = intent.getStringExtra("FAMILIA");
+        String genero = intent.getStringExtra("GENERO");
+        String riego = intent.getStringExtra("RIEGO");
+        String luz = intent.getStringExtra("LUZ");
+        String temperatura = intent.getStringExtra("TEMPERATURA");
+        String cuidados = intent.getStringExtra("CUIDADOS");
+        String toxicidad = intent.getStringExtra("TOXICIDAD");
+        String crecimiento = intent.getStringExtra("CRECIMIENTO");
+        String propagacion = intent.getStringExtra("PROPAGACION");
 
-        // Obtener datos de la planta del intent
-        if (getIntent().hasExtra("NOMBRE_PLANTA")) {
-            String nombre = getIntent().getStringExtra("NOMBRE_PLANTA");
-            String nombreCientifico = getIntent().getStringExtra("NOMBRE_CIENTIFICO");
-            String descripcion = getIntent().getStringExtra("DESCRIPCION");
-            int imagenId = getIntent().getIntExtra("IMAGEN_ID", R.drawable.ic_encyclopedia);
+        // Configurar vistas con los datos
+        tvNombrePlanta.setText(nombrePlanta);
+        tvNombreCientifico.setText(nombreCientifico != null ? nombreCientifico : "N/A");
+        tvDescripcion.setText(descripcion != null ? descripcion : "Descripción no disponible.");
+        tvFamilia.setText(familia != null ? familia : "N/A");
+        tvGenero.setText(genero != null ? genero : "N/A");
+        tvRiego.setText(riego != null ? riego : "Información no disponible");
+        tvLuz.setText(luz != null ? luz : "Información no disponible");
+        tvTemperatura.setText(temperatura != null ? temperatura : "Información no disponible");
+        tvCuidados.setText(cuidados != null ? cuidados : "Información no disponible");
+        tvToxicidad.setText(toxicidad != null ? toxicidad : "Información no disponible");
+        tvCrecimiento.setText(crecimiento != null ? crecimiento : "Información no disponible");
+        tvPropagacion.setText(propagacion != null ? propagacion : "Información no disponible");
 
-            // Configurar datos en las vistas
-            tvPlantaNombre.setText(nombre);
-            tvPlantaNombreCientifico.setText(nombreCientifico);
-            tvPlantaDescripcion.setText(descripcion);
-            ivPlantaImagen.setImageResource(imagenId);
+        // Cargar imagen local
+        ivPlanta.setImageResource(imagenResourceId);
 
-            // Configurar datos de cuidados (estos podrían venir del intent también)
-            tvRiego.setText("Riego: " + getCuidadoRiego(nombre));
-            tvLuz.setText("Luz: " + getCuidadoLuz(nombre));
-            tvTemperatura.setText("Temperatura: " + getCuidadoTemperatura(nombre));
-        }
-
-        // Configurar listener para el botón de retroceso
+        // Configurar botones de navegación
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-        // Configurar listener para el botón de inicio
-        ivHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DetallePlantaActivity.this, HomeActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
                 finish();
             }
         });
-    }
 
-    // Métodos para obtener información de cuidados según la planta
-    // Estos métodos podrían ser reemplazados por datos reales de una base de datos
-    private String getCuidadoRiego(String nombrePlanta) {
-        // Ejemplo simple basado en el nombre de la planta
-        if (nombrePlanta.toLowerCase().contains("cactus")) {
-            return "Escaso, cada 2-3 semanas";
-        } else if (nombrePlanta.toLowerCase().contains("orquídea")) {
-            return "Moderado, una vez por semana";
-        } else if (nombrePlanta.toLowerCase().contains("suculenta")) {
-            return "Escaso, cuando el sustrato esté seco";
-        } else if (nombrePlanta.toLowerCase().contains("aloe")) {
-            return "Escaso, cada 2-3 semanas";
-        } else {
-            return "Moderado, cada 2-3 días";
-        }
-    }
-
-    private String getCuidadoLuz(String nombrePlanta) {
-        // Ejemplo simple basado en el nombre de la planta
-        if (nombrePlanta.toLowerCase().contains("cactus") ||
-                nombrePlanta.toLowerCase().contains("suculenta")) {
-            return "Directa o indirecta brillante";
-        } else if (nombrePlanta.toLowerCase().contains("orquídea")) {
-            return "Indirecta brillante, sin sol directo";
-        } else if (nombrePlanta.toLowerCase().contains("aloe")) {
-            return "Directa o indirecta brillante";
-        } else {
-            return "Indirecta brillante";
-        }
-    }
-
-    private String getCuidadoTemperatura(String nombrePlanta) {
-        // Ejemplo simple basado en el nombre de la planta
-        if (nombrePlanta.toLowerCase().contains("cactus") ||
-                nombrePlanta.toLowerCase().contains("suculenta")) {
-            return "18-32°C";
-        } else if (nombrePlanta.toLowerCase().contains("orquídea")) {
-            return "18-24°C";
-        } else if (nombrePlanta.toLowerCase().contains("aloe")) {
-            return "15-28°C";
-        } else {
-            return "18-24°C";
-        }
+        ivHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Va al Home, limpiando actividades intermedias si es necesario
+                Intent homeIntent = new Intent(DetallePlantaActivity.this, HomeActivity.class);
+                homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(homeIntent);
+                finish(); // Cierra esta actividad
+            }
+        });
     }
 }

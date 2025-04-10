@@ -42,9 +42,12 @@ public class PlantaAdapter extends RecyclerView.Adapter<PlantaAdapter.PlantaView
     public void onBindViewHolder(@NonNull PlantaViewHolder holder, int position) {
         Planta planta = plantasList.get(position);
 
-        holder.tvPlantaNombre.setText(planta.getNombre());
-        holder.tvPlantaNombreCientifico.setText(planta.getNombreCientifico());
-        holder.tvPlantaDescripcion.setText(planta.getDescripcion());
+        // Set text fields with default values if null
+        holder.tvPlantaNombre.setText(planta.getNombre() != null ? planta.getNombre() : "Sin nombre");
+        holder.tvPlantaNombreCientifico.setText(planta.getNombreCientifico() != null ? planta.getNombreCientifico() : "Sin nombre científico");
+        holder.tvPlantaDescripcion.setText(planta.getDescripcion() != null ? planta.getDescripcion() : "Sin descripción");
+
+        // Load image from local resources
         holder.ivPlantaImagen.setImageResource(planta.getImagenResourceId());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
