@@ -61,7 +61,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="12dp"
-            android:src="@drawable/ic_calendar"
+            android:src="@drawable/ic_calendarclock"
             android:background="?attr/selectableItemBackgroundBorderless" />
     </LinearLayout>
 

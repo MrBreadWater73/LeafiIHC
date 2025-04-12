@@ -26,8 +26,8 @@ public class CalendarioFragment extends Fragment {
     private TextView tvFechaSeleccionada;
     private RecyclerView rvTareas;
     private TareaAdapter tareaAdapter;
-    private List<Tarea> tareasList;
-    private List<Tarea> tareasListFull;
+    private List<AreaVerde.Tarea> tareasList;
+    private List<AreaVerde.Tarea> tareasListFull;
 
     @Nullable
     @Override
@@ -51,7 +51,20 @@ public class CalendarioFragment extends Fragment {
         tareasList = filtrarTareasPorFecha(fechaActual);
         
         // Configurar adaptador
-        tareaAdapter = new TareaAdapter(getContext(), tareasList);
+        tareaAdapter = new TareaAdapter(getContext(), tareasList, new TareaAdapter.OnTareaListener() {
+            @Override
+            public void onTareaCompletadaChange(AreaVerde.Tarea tarea, boolean isChecked) {
+                tarea.setCompletada(isChecked);
+                guardarTareas();
+            }
+
+            @Override
+            public void onTareaDelete(AreaVerde.Tarea tarea, int position) {
+                tareasList.remove(position);
+                tareaAdapter.notifyItemRemoved(position);
+                guardarTareas();
+            }
+        });
         rvTareas.setAdapter(tareaAdapter);
         
         // Configurar fecha seleccionada
@@ -84,43 +97,53 @@ public class CalendarioFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         
         // Tareas para hoy
-        tareasListFull.add(new Tarea(
+        tareasListFull.add(new AreaVerde.Tarea(
             "Regar las plantas",
             "Regar todas las plantas de interior",
-            calendar.getTime()
+            calendar.getTime(),
+            "Alta",
+            "Riego"
         ));
         
-        tareasListFull.add(new Tarea(
+        tareasListFull.add(new AreaVerde.Tarea(
             "Fertilizar orquídeas",
             "Aplicar fertilizante específico para orquídeas",
-            calendar.getTime()
+            calendar.getTime(),
+            "Media",
+            "Fertilización"
         ));
         
         // Tareas para mañana
         calendar.add(Calendar.DAY_OF_MONTH, 1);
-        tareasListFull.add(new Tarea(
+        tareasListFull.add(new AreaVerde.Tarea(
             "Podar arbustos",
             "Podar los arbustos del jardín",
-            calendar.getTime()
+            calendar.getTime(),
+            "Media",
+            "Poda"
         ));
         
         // Tareas para la próxima semana
         calendar.add(Calendar.DAY_OF_MONTH, 6);
-        tareasListFull.add(new Tarea(
+        tareasListFull.add(new AreaVerde.Tarea(
             "Trasplantar suculentas",
             "Cambiar las suculentas a macetas más grandes",
-            calendar.getTime()
+            calendar.getTime(),
+            "Baja",
+            "Mantenimiento"
         ));
         
-        tareasListFull.add(new Tarea(
+        tareasListFull.add(new AreaVerde.Tarea(
             "Revisar plagas",
             "Inspeccionar plantas en busca de plagas",
-            calendar.getTime()
+            calendar.getTime(),
+            "Alta",
+            "Plagas"
         ));
     }
 
-    private List<Tarea> filtrarTareasPorFecha(Date fecha) {
-        List<Tarea> tareasFiltradas = new ArrayList<>();
+    private List<AreaVerde.Tarea> filtrarTareasPorFecha(Date fecha) {
+        List<AreaVerde.Tarea> tareasFiltradas = new ArrayList<>();
         
         Calendar cal1 = Calendar.getInstance();
         cal1.setTime(fecha);
@@ -131,8 +154,8 @@ public class CalendarioFragment extends Fragment {
         
         Calendar cal2 = Calendar.getInstance();
         
-        for (Tarea tarea : tareasListFull) {
-            cal2.setTime(tarea.getFecha());
+        for (AreaVerde.Tarea tarea : tareasListFull) {
+            cal2.setTime(tarea.getFechaVencimiento());
             cal2.set(Calendar.HOUR_OF_DAY, 0);
             cal2.set(Calendar.MINUTE, 0);
             cal2.set(Calendar.SECOND, 0);
@@ -144,5 +167,10 @@ public class CalendarioFragment extends Fragment {
         }
         
         return tareasFiltradas;
+    }
+
+    private void guardarTareas() {
+        // Aquí implementarías la lógica para guardar las tareas
+        // Por ejemplo, en SharedPreferences o en una base de datos
     }
 }

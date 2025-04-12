@@ -52,7 +52,7 @@ public class ActividadAdapter extends RecyclerView.Adapter<ActividadAdapter.Acti
                 holder.ivIconoActividad.setImageResource(R.drawable.ic_pruning);
                 break;
             default:
-                holder.ivIconoActividad.setImageResource(R.drawable.ic_calendar);
+                holder.ivIconoActividad.setImageResource(R.drawable.ic_calendarclock);
                 break;
         }
     }

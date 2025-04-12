@@ -13,6 +13,7 @@ public class AreaVerde {
     private int nivelHumedad;
     private int nivelLuz;
     private List<Actividad> actividades;
+    private List<Tarea> tareas;
     private boolean seleccionada;
 
     public AreaVerde(String nombre, String codigo) {
@@ -24,6 +25,7 @@ public class AreaVerde {
         this.nivelHumedad = 75;
         this.nivelLuz = 85;
         this.actividades = new ArrayList<>();
+        this.tareas = new ArrayList<>();
         this.seleccionada = false;
     }
 
@@ -91,6 +93,14 @@ public class AreaVerde {
         this.actividades = actividades;
     }
 
+    public List<Tarea> getTareas() {
+        return tareas;
+    }
+
+    public void setTareas(List<Tarea> tareas) {
+        this.tareas = tareas;
+    }
+
     public void addActividad(Actividad actividad) {
         this.actividades.add(actividad);
     }
@@ -137,6 +147,52 @@ public class AreaVerde {
 
         public void setDescripcion(String descripcion) {
             this.descripcion = descripcion;
+        }
+    }
+
+    public static class Tarea {
+        private String titulo;
+        private String descripcion;
+        private Date fechaVencimiento;
+        private String prioridad;
+        private String categoria;
+        private boolean completada;
+
+        public Tarea(String titulo, String descripcion, Date fechaVencimiento, String prioridad, String categoria) {
+            this.titulo = titulo;
+            this.descripcion = descripcion;
+            this.fechaVencimiento = fechaVencimiento;
+            this.prioridad = prioridad;
+            this.categoria = categoria;
+            this.completada = false;
+        }
+
+        public String getTitulo() {
+            return titulo;
+        }
+
+        public String getDescripcion() {
+            return descripcion;
+        }
+
+        public Date getFechaVencimiento() {
+            return fechaVencimiento;
+        }
+
+        public String getPrioridad() {
+            return prioridad;
+        }
+
+        public String getCategoria() {
+            return categoria;
+        }
+
+        public boolean isCompletada() {
+            return completada;
+        }
+
+        public void setCompletada(boolean completada) {
+            this.completada = completada;
         }
     }
 }

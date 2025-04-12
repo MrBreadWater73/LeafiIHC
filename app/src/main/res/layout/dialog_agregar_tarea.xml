@@ -56,29 +56,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Categoría"
-        android:textColor="#757575"
-        android:textSize="14sp"
-        android:layout_marginBottom="4dp" />
-
-    <Spinner
-        android:id="@+id/spinnerCategoriaTarea"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/edit_text_background"
-        android:padding="12dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="Prioridad"
         android:textColor="#757575"
         android:textSize="14sp"
         android:layout_marginBottom="4dp" />
 
     <Spinner
-        android:id="@+id/spinnerPrioridadTarea"
+        android:id="@+id/spinnerPrioridad"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -88,10 +72,26 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fecha de vencimiento"
+        android:text="Categoría"
         android:textColor="#757575"
         android:textSize="14sp"
         android:layout_marginBottom="4dp" />
+
+    <Spinner
+        android:id="@+id/spinnerCategoria"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="Fecha y hora de vencimiento"
+        android:textColor="#757575"
+        android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -99,8 +99,17 @@
         android:orientation="horizontal"
         android:layout_marginBottom="16dp">
 
+        <ImageView
+            android:id="@+id/ivCalendarioTarea"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="12dp"
+            android:src="@drawable/ic_calendarclock" />
+
         <EditText
-            android:id="@+id/etFechaVencimiento"
+            android:id="@+id/etFechaTarea"
+            android:inputType="time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -110,13 +119,6 @@
             android:focusable="false"
             android:clickable="true" />
 
-        <ImageView
-            android:id="@+id/ivCalendarioTarea"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:padding="12dp"
-            android:src="@drawable/ic_calendar"
-            android:background="?attr/selectableItemBackgroundBorderless" />
     </LinearLayout>
 
     <LinearLayout

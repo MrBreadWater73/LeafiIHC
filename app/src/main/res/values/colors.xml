@@ -4,21 +4,21 @@
     <color name="white">#FFFFFFFF</color>
     
     <!-- Primary Colors -->
-    <color name="colorPrimary">#2E7D32</color>
-    <color name="colorPrimaryDark">#1B5E20</color>
+    <color name="colorPrimary">#4CAF50</color>
+    <color name="colorPrimaryDark">#388E3C</color>
     <color name="colorPrimaryLight">#81C784</color>
     
     <!-- Accent Colors -->
-    <color name="colorAccent">#FFA000</color>
+    <color name="colorAccent">#8BC34A</color>
     <color name="colorAccentLight">#FFD54F</color>
     
     <!-- Background Colors -->
-    <color name="colorBackground">#F5F5F5</color>
+    <color name="colorBackground">#FFFFFF</color>
     <color name="colorSurface">#FFFFFF</color>
     <color name="colorCardBackground">#FFFFFF</color>
     
     <!-- Text Colors -->
-    <color name="colorTextPrimary">#212121</color>
+    <color name="colorText">#212121</color>
     <color name="colorTextSecondary">#757575</color>
     <color name="colorTextHint">#9E9E9E</color>
     
@@ -38,4 +38,7 @@
     <color name="colorTextPrimaryDark">#FFFFFF</color>
     <color name="colorTextSecondaryDark">#B3FFFFFF</color>
     <color name="colorTextHintDark">#80FFFFFF</color>
+
+    <!-- Dividers -->
+    <color name="colorDivider">#BDBDBD</color>
 </resources>

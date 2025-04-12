@@ -1,9 +1,14 @@
 package com.example.leafiihc;
 
+import com.example.leafiihc.services.GreenAreaMonitoringService;
+
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,8 +52,13 @@ public class DetalleAreaVerdeActivity extends AppCompatActivity {
     private ProgressBar pbHumedad, pbLuz;
     private Button btnRegistrarActividad, btnEditarArea;
     private RecyclerView rvActividades;
-    private TextView tvSinActividades;
+    private TextView tvSinActividades, tvSinTareas;
     private ActividadAdapter actividadAdapter;
+    private Button btnAgregarTarea;
+    private Button btnIniciarMonitoreo;
+    private Button btnDetenerMonitoreo;
+    private RecyclerView rvTareas;
+    private TareaAdapter tareaAdapter;
 
     private List<AreaVerde> areasVerdesList;
     private AreaVerde areaVerde;
@@ -60,30 +72,32 @@ public class DetalleAreaVerdeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_area_verde);
 
+        // Start monitoring service
+        Intent serviceIntent = new Intent(this, GreenAreaMonitoringService.class);
+        startService(serviceIntent);
+
+        // Request notification permission if needed
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) 
+                != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, 
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS}, 
+                    1);
+            }
+        }
+
+        // Inicializar vistas
+        initializeViews();
+
         // Obtener datos del intent
         codigoArea = getIntent().getStringExtra("CODIGO_AREA");
         modoEdicion = getIntent().getBooleanExtra("MODO_EDICION", false);
 
-        // Inicializar vistas
-        ivBack = findViewById(R.id.ivBack);
-        ivHome = findViewById(R.id.ivHome);
-        ivUserAvatar = findViewById(R.id.ivUserAvatar);
-        tvNombreAreaDetalle = findViewById(R.id.tvNombreAreaDetalle);
-        tvCodigoAreaDetalle = findViewById(R.id.tvCodigoAreaDetalle);
-        tvFechaRegistro = findViewById(R.id.tvFechaRegistro);
-        tvEstadoArea = findViewById(R.id.tvEstadoArea);
-        tvUltimaRevision = findViewById(R.id.tvUltimaRevision);
-        tvHumedad = findViewById(R.id.tvHumedad);
-        tvLuz = findViewById(R.id.tvLuz);
-        pbHumedad = findViewById(R.id.pbHumedad);
-        pbLuz = findViewById(R.id.pbLuz);
-        btnRegistrarActividad = findViewById(R.id.btnRegistrarActividad);
-        btnEditarArea = findViewById(R.id.btnEditarArea);
-        rvActividades = findViewById(R.id.rvActividades);
-        tvSinActividades = findViewById(R.id.tvSinActividades);
-
-        // Configurar RecyclerView
-        rvActividades.setLayoutManager(new LinearLayoutManager(this));
+        if (codigoArea == null) {
+            Toast.makeText(this, "Error: No se proporcionó código de área", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         // Cargar áreas verdes y buscar la seleccionada
         cargarAreasVerdes();
@@ -103,44 +117,133 @@ public class DetalleAreaVerdeActivity extends AppCompatActivity {
         }
 
         // Configurar listeners
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
+        setupListeners();
+
+        // Configurar adaptadores
+        setupAdapters();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Stop monitoring service when activity is destroyed
+        Intent serviceIntent = new Intent(this, GreenAreaMonitoringService.class);
+        stopService(serviceIntent);
+    }
+
+    private void initializeViews() {
+        // Inicializar vistas del header
+        ivBack = findViewById(R.id.ivBack);
+        ivHome = findViewById(R.id.ivHome);
+        ivUserAvatar = findViewById(R.id.ivUserAvatar);
+        
+        // Inicializar TextViews
+        tvNombreAreaDetalle = findViewById(R.id.tvNombreAreaDetalle);
+        tvCodigoAreaDetalle = findViewById(R.id.tvCodigoAreaDetalle);
+        tvFechaRegistro = findViewById(R.id.tvFechaRegistro);
+        tvEstadoArea = findViewById(R.id.tvEstadoArea);
+        tvUltimaRevision = findViewById(R.id.tvUltimaRevision);
+        tvHumedad = findViewById(R.id.tvHumedad);
+        tvLuz = findViewById(R.id.tvLuz);
+        tvSinActividades = findViewById(R.id.tvSinActividades);
+        tvSinTareas = findViewById(R.id.tvSinTareas);
+
+        // Inicializar ProgressBars
+        pbHumedad = findViewById(R.id.pbHumedad);
+        pbLuz = findViewById(R.id.pbLuz);
+
+        // Inicializar botones
+        btnRegistrarActividad = findViewById(R.id.btnRegistrarActividad);
+        btnEditarArea = findViewById(R.id.btnEditarArea);
+        btnAgregarTarea = findViewById(R.id.btnAgregarTarea);
+        btnIniciarMonitoreo = findViewById(R.id.btnIniciarMonitoreo);
+        btnDetenerMonitoreo = findViewById(R.id.btnDetenerMonitoreo);
+
+        // Inicializar RecyclerViews
+        rvActividades = findViewById(R.id.rvActividades);
+        if (rvActividades != null) {
+            rvActividades.setLayoutManager(new LinearLayoutManager(this));
+            rvActividades.setNestedScrollingEnabled(false);
+        }
+
+        rvTareas = findViewById(R.id.rvTareas);
+        if (rvTareas != null) {
+            rvTareas.setLayoutManager(new LinearLayoutManager(this));
+            rvTareas.setNestedScrollingEnabled(false);
+        }
+    }
+
+    private void setupListeners() {
+        ivBack.setOnClickListener(v -> finish());
+
+        ivHome.setOnClickListener(v -> {
+            Intent intent = new Intent(DetalleAreaVerdeActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
         });
 
-        ivHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DetalleAreaVerdeActivity.this, HomeActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                finish();
-            }
+        ivUserAvatar.setOnClickListener(v -> {
+            Intent intent = new Intent(DetalleAreaVerdeActivity.this, PerfilUsuarioActivity.class);
+            startActivity(intent);
         });
 
-        ivUserAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DetalleAreaVerdeActivity.this, PerfilUsuarioActivity.class);
-                startActivity(intent);
-            }
-        });
+        btnRegistrarActividad.setOnClickListener(v -> mostrarDialogoRegistrarActividad());
+        btnEditarArea.setOnClickListener(v -> mostrarDialogoEditarArea());
+        btnAgregarTarea.setOnClickListener(v -> mostrarDialogoAgregarTarea());
+        btnIniciarMonitoreo.setOnClickListener(v -> iniciarMonitoreo());
+        btnDetenerMonitoreo.setOnClickListener(v -> detenerMonitoreo());
+    }
 
-        btnRegistrarActividad.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mostrarDialogoRegistrarActividad();
+    private void setupAdapters() {
+        if (areaVerde != null) {
+            // Configurar adaptador de actividades
+            if (rvActividades != null) {
+                if (areaVerde.getActividades() != null && !areaVerde.getActividades().isEmpty()) {
+                    actividadAdapter = new ActividadAdapter(this, areaVerde.getActividades());
+                    rvActividades.setAdapter(actividadAdapter);
+                    rvActividades.setVisibility(View.VISIBLE);
+                    if (tvSinActividades != null) {
+                        tvSinActividades.setVisibility(View.GONE);
+                    }
+                } else {
+                    rvActividades.setVisibility(View.GONE);
+                    if (tvSinActividades != null) {
+                        tvSinActividades.setVisibility(View.VISIBLE);
+                    }
+                }
             }
-        });
 
-        btnEditarArea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mostrarDialogoEditarArea();
+            // Configurar adaptador de tareas
+            if (rvTareas != null) {
+                if (areaVerde.getTareas() != null && !areaVerde.getTareas().isEmpty()) {
+                    tareaAdapter = new TareaAdapter(this, areaVerde.getTareas(), new TareaAdapter.OnTareaListener() {
+                        @Override
+                        public void onTareaCompletadaChange(AreaVerde.Tarea tarea, boolean isChecked) {
+                            tarea.setCompletada(isChecked);
+                            guardarAreasVerdes();
+                        }
+
+                        @Override
+                        public void onTareaDelete(AreaVerde.Tarea tarea, int position) {
+                            areaVerde.getTareas().remove(position);
+                            tareaAdapter.notifyItemRemoved(position);
+                            guardarAreasVerdes();
+                        }
+                    });
+                    rvTareas.setAdapter(tareaAdapter);
+                    rvTareas.setVisibility(View.VISIBLE);
+                    if (tvSinTareas != null) {
+                        tvSinTareas.setVisibility(View.GONE);
+                    }
+                } else {
+                    rvTareas.setVisibility(View.GONE);
+                    if (tvSinTareas != null) {
+                        tvSinTareas.setVisibility(View.VISIBLE);
+                    }
+                }
             }
-        });
+        }
     }
 
     private void cargarAreasVerdes() {
@@ -204,14 +307,21 @@ public class DetalleAreaVerdeActivity extends AppCompatActivity {
 
     private void actualizarListaActividades() {
         if (areaVerde.getActividades() != null && !areaVerde.getActividades().isEmpty()) {
-            tvSinActividades.setVisibility(View.GONE);
-            rvActividades.setVisibility(View.VISIBLE);
-
-            actividadAdapter = new ActividadAdapter(this, areaVerde.getActividades());
-            rvActividades.setAdapter(actividadAdapter);
+            if (tvSinActividades != null) {
+                tvSinActividades.setVisibility(View.GONE);
+            }
+            if (rvActividades != null) {
+                rvActividades.setVisibility(View.VISIBLE);
+                actividadAdapter = new ActividadAdapter(this, areaVerde.getActividades());
+                rvActividades.setAdapter(actividadAdapter);
+            }
         } else {
-            tvSinActividades.setVisibility(View.VISIBLE);
-            rvActividades.setVisibility(View.GONE);
+            if (tvSinActividades != null) {
+                tvSinActividades.setVisibility(View.VISIBLE);
+            }
+            if (rvActividades != null) {
+                rvActividades.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -421,5 +531,150 @@ public class DetalleAreaVerdeActivity extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    private void mostrarDialogoAgregarTarea() {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_agregar_tarea);
+        dialog.setCancelable(true);
+
+        // Inicializar vistas del diálogo
+        final EditText etTituloTarea = dialog.findViewById(R.id.etTituloTarea);
+        final EditText etDescripcionTarea = dialog.findViewById(R.id.etDescripcionTarea);
+        final EditText etFechaTarea = dialog.findViewById(R.id.etFechaTarea);
+        final Spinner spinnerPrioridad = dialog.findViewById(R.id.spinnerPrioridad);
+        final Spinner spinnerCategoria = dialog.findViewById(R.id.spinnerCategoria);
+        final ImageView ivCalendarioTarea = dialog.findViewById(R.id.ivCalendarioTarea);
+        Button btnCancelarTarea = dialog.findViewById(R.id.btnCancelarTarea);
+        Button btnGuardarTarea = dialog.findViewById(R.id.btnGuardarTarea);
+
+        // Configurar spinners
+        String[] prioridades = {"Alta", "Media", "Baja"};
+        ArrayAdapter<String> adapterPrioridad = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, prioridades);
+        adapterPrioridad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPrioridad.setAdapter(adapterPrioridad);
+
+        String[] categorias = {"Riego", "Fertilización", "Poda", "Limpieza", "Fumigación", "Mantenimiento", "Otro"};
+        ArrayAdapter<String> adapterCategoria = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categorias);
+        adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategoria.setAdapter(adapterCategoria);
+
+        // Configurar fecha actual
+        final Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1); // Por defecto, mañana
+        etFechaTarea.setText(sdf.format(calendar.getTime()));
+
+        // Configurar selector de fecha
+        final DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                etFechaTarea.setText(sdf.format(calendar.getTime()));
+            }
+        };
+
+        etFechaTarea.setOnClickListener(v -> {
+            new DatePickerDialog(DetalleAreaVerdeActivity.this, dateSetListener,
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
+
+        ivCalendarioTarea.setOnClickListener(v -> {
+            new DatePickerDialog(DetalleAreaVerdeActivity.this, dateSetListener,
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
+
+        // Configurar botones
+        btnCancelarTarea.setOnClickListener(v -> dialog.dismiss());
+
+        btnGuardarTarea.setOnClickListener(v -> {
+            // Validar campos
+            if (etTituloTarea.getText().toString().trim().isEmpty()) {
+                Toast.makeText(DetalleAreaVerdeActivity.this, "Por favor ingresa un título", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (etDescripcionTarea.getText().toString().trim().isEmpty()) {
+                Toast.makeText(DetalleAreaVerdeActivity.this, "Por favor ingresa una descripción", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            try {
+                // Crear nueva tarea
+                String titulo = etTituloTarea.getText().toString().trim();
+                String descripcion = etDescripcionTarea.getText().toString().trim();
+                Date fecha = sdf.parse(etFechaTarea.getText().toString());
+                String prioridad = spinnerPrioridad.getSelectedItem().toString();
+                String categoria = spinnerCategoria.getSelectedItem().toString();
+
+                // Si la lista de tareas no existe, crearla
+                if (areaVerde.getTareas() == null) {
+                    areaVerde.setTareas(new ArrayList<>());
+                }
+
+                // Agregar la nueva tarea
+                AreaVerde.Tarea nuevaTarea = new AreaVerde.Tarea(titulo, descripcion, fecha, prioridad, categoria);
+                areaVerde.getTareas().add(nuevaTarea);
+
+                // Guardar cambios
+                guardarAreasVerdes();
+
+                // Actualizar la interfaz
+                if (tareaAdapter == null) {
+                    if (rvTareas != null) {
+                        tareaAdapter = new TareaAdapter(this, areaVerde.getTareas(), new TareaAdapter.OnTareaListener() {
+                            @Override
+                            public void onTareaCompletadaChange(AreaVerde.Tarea tarea, boolean isChecked) {
+                                tarea.setCompletada(isChecked);
+                                guardarAreasVerdes();
+                            }
+
+                            @Override
+                            public void onTareaDelete(AreaVerde.Tarea tarea, int position) {
+                                areaVerde.getTareas().remove(position);
+                                tareaAdapter.notifyItemRemoved(position);
+                                guardarAreasVerdes();
+                            }
+                        });
+                        rvTareas.setAdapter(tareaAdapter);
+                    }
+                } else {
+                    tareaAdapter.notifyDataSetChanged();
+                }
+
+                // Actualizar visibilidad
+                if (rvTareas != null) {
+                    rvTareas.setVisibility(View.VISIBLE);
+                }
+                if (tvSinTareas != null) {
+                    tvSinTareas.setVisibility(View.GONE);
+                }
+
+                Toast.makeText(DetalleAreaVerdeActivity.this, "Tarea agregada correctamente", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            } catch (ParseException e) {
+                Toast.makeText(DetalleAreaVerdeActivity.this, "Error al procesar la fecha", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void iniciarMonitoreo() {
+        Intent serviceIntent = new Intent(this, GreenAreaMonitoringService.class);
+        serviceIntent.putExtra("codigo_area", areaVerde.getCodigo());
+        startService(serviceIntent);
+        Toast.makeText(this, "Monitoreo iniciado", Toast.LENGTH_SHORT).show();
+    }
+
+    private void detenerMonitoreo() {
+        Intent serviceIntent = new Intent(this, GreenAreaMonitoringService.class);
+        stopService(serviceIntent);
+        Toast.makeText(this, "Monitoreo detenido", Toast.LENGTH_SHORT).show();
     }
 }

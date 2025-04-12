@@ -4,8 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,19 +14,18 @@ import java.util.List;
 
 public class AreaVerdeAdapter extends RecyclerView.Adapter<AreaVerdeAdapter.AreaVerdeViewHolder> {
 
-    private List<AreaVerde> areasList;
     private Context context;
+    private List<AreaVerde> areasVerdes;
     private OnAreaVerdeListener listener;
 
     public interface OnAreaVerdeListener {
-        void onAreaVerdeClick(AreaVerde areaVerde, int position);
-        void onAreaVerdeCheckChanged(AreaVerde areaVerde, int position, boolean isChecked);
-        void onAreaVerdeEditClick(AreaVerde areaVerde, int position);
+        void onAreaVerdeClick(AreaVerde areaVerde);
+        void onAreaVerdeDelete(AreaVerde areaVerde, int position);
     }
 
-    public AreaVerdeAdapter(Context context, List<AreaVerde> areasList, OnAreaVerdeListener listener) {
+    public AreaVerdeAdapter(Context context, List<AreaVerde> areasVerdes, OnAreaVerdeListener listener) {
         this.context = context;
-        this.areasList = areasList;
+        this.areasVerdes = areasVerdes;
         this.listener = listener;
     }
 
@@ -41,58 +38,37 @@ public class AreaVerdeAdapter extends RecyclerView.Adapter<AreaVerdeAdapter.Area
 
     @Override
     public void onBindViewHolder(@NonNull AreaVerdeViewHolder holder, int position) {
-        AreaVerde areaVerde = areasList.get(position);
-        
-        holder.tvNombreArea.setText(areaVerde.getNombre());
-        holder.tvCodigoArea.setText(areaVerde.getCodigo());
-        holder.cbSeleccionada.setChecked(areaVerde.isSeleccionada());
-        
-        // Configurar listeners
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onAreaVerdeClick(areaVerde, holder.getAdapterPosition());
-                }
+        AreaVerde areaVerde = areasVerdes.get(position);
+        holder.tvNombre.setText(areaVerde.getNombre());
+        holder.tvCodigo.setText(areaVerde.getCodigo());
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onAreaVerdeClick(areaVerde);
             }
         });
-        
-        holder.cbSeleccionada.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                areaVerde.setSeleccionada(isChecked);
-                if (listener != null) {
-                    listener.onAreaVerdeCheckChanged(areaVerde, holder.getAdapterPosition(), isChecked);
-                }
-            }
-        });
-        
-        holder.ivEditar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onAreaVerdeEditClick(areaVerde, holder.getAdapterPosition());
-                }
+
+        holder.ivDelete.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onAreaVerdeDelete(areaVerde, position);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return areasList.size();
+        return areasVerdes.size();
     }
 
     public static class AreaVerdeViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNombreArea, tvCodigoArea;
-        CheckBox cbSeleccionada;
-        ImageView ivEditar;
+        TextView tvNombre, tvCodigo;
+        ImageView ivDelete;
 
         public AreaVerdeViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvNombreArea = itemView.findViewById(R.id.tvNombreArea);
-            tvCodigoArea = itemView.findViewById(R.id.tvCodigoArea);
-            cbSeleccionada = itemView.findViewById(R.id.cbSeleccionada);
-            ivEditar = itemView.findViewById(R.id.ivEditar);
+            tvNombre = itemView.findViewById(R.id.tvNombre);
+            tvCodigo = itemView.findViewById(R.id.tvCodigo);
+            ivDelete = itemView.findViewById(R.id.ivDelete);
         }
     }
 }

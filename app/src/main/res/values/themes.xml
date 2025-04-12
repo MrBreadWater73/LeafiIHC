@@ -14,7 +14,7 @@
         <item name="colorSurfaceVariant">@color/colorCardBackground</item>
         
         <!-- Text colors. -->
-        <item name="android:textColorPrimary">@color/colorTextPrimary</item>
+        <item name="android:textColorPrimary">@color/colorText</item>
         <item name="android:textColorSecondary">@color/colorTextSecondary</item>
         <item name="android:textColorHint">@color/colorTextHint</item>
         

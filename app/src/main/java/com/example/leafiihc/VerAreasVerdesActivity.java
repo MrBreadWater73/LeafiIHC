@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,13 +24,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class VerAreasVerdesActivity extends AppCompatActivity implements AreaVerdeAdapter.OnAreaVerdeListener {
 
     private RecyclerView rvAreasVerdes;
-    private TextView tvListaVacia;
-    private Button btnVerDetalles, btnEliminar, btnRegresar;
-    private ImageView ivHome;
-    private CircleImageView ivUserAvatar;
-
+    private AreaVerdeAdapter areaVerdeAdapter;
     private List<AreaVerde> areasVerdesList;
-    private AreaVerdeAdapter adapter;
+    private TextView tvSinAreas;
+    private ImageView ivBack, ivHome;
+    private CircleImageView ivUserAvatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,72 +36,57 @@ public class VerAreasVerdesActivity extends AppCompatActivity implements AreaVer
         setContentView(R.layout.activity_ver_areas_verdes);
 
         // Inicializar vistas
-        rvAreasVerdes = findViewById(R.id.rvAreasVerdes);
-        tvListaVacia = findViewById(R.id.tvListaVacia);
-        btnVerDetalles = findViewById(R.id.btnVerDetalles);
-        btnEliminar = findViewById(R.id.btnEliminar);
-        btnRegresar = findViewById(R.id.btnRegresar);
-        ivHome = findViewById(R.id.ivHome);
-        ivUserAvatar = findViewById(R.id.ivUserAvatar);
-
-        // Configurar RecyclerView
-        rvAreasVerdes.setLayoutManager(new LinearLayoutManager(this));
+        initializeViews();
 
         // Cargar áreas verdes
         cargarAreasVerdes();
 
-        // Configurar adaptador
-        adapter = new AreaVerdeAdapter(this, areasVerdesList, this);
-        rvAreasVerdes.setAdapter(adapter);
+        // Configurar RecyclerView
+        setupRecyclerView();
+    }
 
-        // Mostrar mensaje si la lista está vacía
-        actualizarVistaListaVacia();
+    private void initializeViews() {
+        rvAreasVerdes = findViewById(R.id.rvAreasVerdes);
+        tvSinAreas = findViewById(R.id.tvListaVacia);
+        ivBack = findViewById(R.id.ivBack);
+        ivHome = findViewById(R.id.ivHome);
+        ivUserAvatar = findViewById(R.id.ivUserAvatar);
 
         // Configurar listeners
-        btnVerDetalles.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                verDetallesAreaSeleccionada();
-            }
+        ivBack.setOnClickListener(v -> finish());
+
+        ivHome.setOnClickListener(v -> {
+            Intent intent = new Intent(VerAreasVerdesActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
         });
 
-        btnEliminar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                eliminarAreasSeleccionadas();
-            }
+        ivUserAvatar.setOnClickListener(v -> {
+            Intent intent = new Intent(VerAreasVerdesActivity.this, PerfilUsuarioActivity.class);
+            startActivity(intent);
         });
+    }
 
-        btnRegresar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+    private void setupRecyclerView() {
+        rvAreasVerdes.setLayoutManager(new LinearLayoutManager(this));
+        areaVerdeAdapter = new AreaVerdeAdapter(this, areasVerdesList, this);
+        rvAreasVerdes.setAdapter(areaVerdeAdapter);
 
-        ivHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(VerAreasVerdesActivity.this, HomeActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        ivUserAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(VerAreasVerdesActivity.this, PerfilUsuarioActivity.class);
-                startActivity(intent);
-            }
-        });
+        // Mostrar mensaje si no hay áreas
+        if (areasVerdesList.isEmpty()) {
+            tvSinAreas.setVisibility(View.VISIBLE);
+            rvAreasVerdes.setVisibility(View.GONE);
+        } else {
+            tvSinAreas.setVisibility(View.GONE);
+            rvAreasVerdes.setVisibility(View.VISIBLE);
+        }
     }
 
     private void cargarAreasVerdes() {
         SharedPreferences prefs = getSharedPreferences("AreasVerdesPrefs", MODE_PRIVATE);
         String areasJson = prefs.getString("areasVerdes", "");
-        
+
         if (!areasJson.isEmpty()) {
             Gson gson = new Gson();
             Type type = new TypeToken<ArrayList<AreaVerde>>(){}.getType();
@@ -117,85 +99,32 @@ public class VerAreasVerdesActivity extends AppCompatActivity implements AreaVer
     private void guardarAreasVerdes() {
         SharedPreferences prefs = getSharedPreferences("AreasVerdesPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        
+
         Gson gson = new Gson();
         String areasJson = gson.toJson(areasVerdesList);
         editor.putString("areasVerdes", areasJson);
         editor.apply();
     }
 
-    private void actualizarVistaListaVacia() {
+    @Override
+    public void onAreaVerdeClick(AreaVerde areaVerde) {
+        Intent intent = new Intent(this, DetalleAreaVerdeActivity.class);
+        intent.putExtra("CODIGO_AREA", areaVerde.getCodigo());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onAreaVerdeDelete(AreaVerde areaVerde, int position) {
+        areasVerdesList.remove(position);
+        areaVerdeAdapter.notifyItemRemoved(position);
+        guardarAreasVerdes();
+
+        // Actualizar visibilidad
         if (areasVerdesList.isEmpty()) {
-            tvListaVacia.setVisibility(View.VISIBLE);
+            tvSinAreas.setVisibility(View.VISIBLE);
             rvAreasVerdes.setVisibility(View.GONE);
-            btnVerDetalles.setEnabled(false);
-            btnEliminar.setEnabled(false);
-        } else {
-            tvListaVacia.setVisibility(View.GONE);
-            rvAreasVerdes.setVisibility(View.VISIBLE);
-            btnVerDetalles.setEnabled(true);
-            btnEliminar.setEnabled(true);
         }
-    }
 
-    private void verDetallesAreaSeleccionada() {
-        AreaVerde areaSeleccionada = null;
-        
-        for (AreaVerde area : areasVerdesList) {
-            if (area.isSeleccionada()) {
-                areaSeleccionada = area;
-                break;
-            }
-        }
-        
-        if (areaSeleccionada != null) {
-            Intent intent = new Intent(VerAreasVerdesActivity.this, DetalleAreaVerdeActivity.class);
-            intent.putExtra("CODIGO_AREA", areaSeleccionada.getCodigo());
-            startActivity(intent);
-        } else {
-            Toast.makeText(this, "Selecciona un área verde para ver sus detalles", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void eliminarAreasSeleccionadas() {
-        boolean haySeleccionadas = false;
-        List<AreaVerde> areasAEliminar = new ArrayList<>();
-        
-        for (AreaVerde area : areasVerdesList) {
-            if (area.isSeleccionada()) {
-                areasAEliminar.add(area);
-                haySeleccionadas = true;
-            }
-        }
-        
-        if (haySeleccionadas) {
-            areasVerdesList.removeAll(areasAEliminar);
-            guardarAreasVerdes();
-            adapter.notifyDataSetChanged();
-            actualizarVistaListaVacia();
-            Toast.makeText(this, "Áreas verdes eliminadas", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Selecciona al menos un área verde para eliminar", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onAreaVerdeClick(AreaVerde areaVerde, int position) {
-        Intent intent = new Intent(VerAreasVerdesActivity.this, DetalleAreaVerdeActivity.class);
-        intent.putExtra("CODIGO_AREA", areaVerde.getCodigo());
-        startActivity(intent);
-    }
-
-    @Override
-    public void onAreaVerdeCheckChanged(AreaVerde areaVerde, int position, boolean isChecked) {
-        // Ya se actualiza el estado en el adaptador
-    }
-
-    @Override
-    public void onAreaVerdeEditClick(AreaVerde areaVerde, int position) {
-        Intent intent = new Intent(VerAreasVerdesActivity.this, DetalleAreaVerdeActivity.class);
-        intent.putExtra("CODIGO_AREA", areaVerde.getCodigo());
-        intent.putExtra("MODO_EDICION", true);
-        startActivity(intent);
+        Toast.makeText(this, "Área verde eliminada", Toast.LENGTH_SHORT).show();
     }
 }
