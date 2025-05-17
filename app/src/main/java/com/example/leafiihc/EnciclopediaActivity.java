@@ -12,24 +12,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.leafiihc.api.TrefleApiClient;
-import com.example.leafiihc.api.TrefleApiService;
-import com.example.leafiihc.api.TreflePlant;
-import com.example.leafiihc.api.TrefleSearchResponse;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+
 
 public class EnciclopediaActivity extends AppCompatActivity implements PlantaAdapter.OnPlantaClickListener {
 
@@ -41,9 +30,6 @@ public class EnciclopediaActivity extends AppCompatActivity implements PlantaAda
     private ImageView ivHome;
     private ProgressBar progressBar;
     private View btnEnfermedades;
-    private TrefleApiService apiService;
-    private static final String API_KEY = "iEzGUK_ulXxuTWcJrnJ3KregnfmjPgf8jyurisNPVH8";
-    private static final int ITEMS_PER_PAGE = 30; // Trefle uses 30 items per page by default
 
     private int currentPage = 1;
     private boolean isLoading = false;
@@ -78,9 +64,6 @@ public class EnciclopediaActivity extends AppCompatActivity implements PlantaAda
 
         // Inicializar lista de plantas
         plantasList = new ArrayList<>();
-        
-        // Inicializar el servicio de API
-        apiService = TrefleApiClient.getInstance().getApiService();
 
         // Configurar adaptador
         plantaAdapter = new PlantaAdapter(this, plantasList, this);
@@ -332,7 +315,128 @@ public class EnciclopediaActivity extends AppCompatActivity implements PlantaAda
         suculenta.setCrecimiento("Lento a moderado");
         suculenta.setPropagacion("Por esquejes de hoja o tallo");
         plantasList.add(suculenta);
-        
+
+        // Orquídea Phalaenopsis
+        Planta orquidea = new Planta();
+        orquidea.setNombre("Orquídea Phalaenopsis");
+        orquidea.setNombreCientifico("Phalaenopsis spp.");
+        orquidea.setDescripcion("Conocida como orquídea mariposa, es una de las orquídeas más populares y fáciles de cultivar en interiores, con flores elegantes y duraderas.");
+        orquidea.setImagenResourceId(R.drawable.orquidea);
+        orquidea.setFamilia("Orchidaceae");
+        orquidea.setGenero("Phalaenopsis");
+        orquidea.setRiego("Riego moderado, dejar secar entre riegos");
+        orquidea.setLuz("Luz indirecta brillante, sin sol directo");
+        orquidea.setTemperatura("18-29°C");
+        orquidea.setCuidados("Maceta con buen drenaje, sustrato específico para orquídeas");
+        orquidea.setToxicidad("No tóxica");
+        orquidea.setCrecimiento("Lento");
+        orquidea.setPropagacion("Por keikis (hijuelos) o división");
+        plantasList.add(orquidea);
+
+// Helecho Nido de Ave
+        Planta helecho = new Planta();
+        helecho.setNombre("Helecho Nido de Ave");
+        helecho.setNombreCientifico("Asplenium nidus");
+        helecho.setDescripcion("Helecho de interior con grandes frondas en forma de roseta que recuerdan a un nido, añade un toque tropical a cualquier espacio.");
+        helecho.setImagenResourceId(R.drawable.helecho);
+        helecho.setFamilia("Aspleniaceae");
+        helecho.setGenero("Asplenium");
+        helecho.setRiego("Riego regular, mantener sustrato húmedo");
+        helecho.setLuz("Luz indirecta, evitar sol directo");
+        helecho.setTemperatura("18-24°C");
+        helecho.setCuidados("Alta humedad ambiental, pulverizar regularmente");
+        helecho.setToxicidad("No tóxico");
+        helecho.setCrecimiento("Moderado");
+        helecho.setPropagacion("Por esporas o división");
+        plantasList.add(helecho);
+
+// Palmera Areca
+        Planta areca = new Planta();
+        areca.setNombre("Palmera Areca");
+        areca.setNombreCientifico("Dypsis lutescens");
+        areca.setDescripcion("Palmera de interior con tallos múltiples y hojas arqueadas y plumosas, ideal para purificar el aire y dar un aspecto tropical.");
+        areca.setImagenResourceId(R.drawable.areca);
+        areca.setFamilia("Arecaceae");
+        areca.setGenero("Dypsis");
+        areca.setRiego("Riego moderado, dejar secar ligeramente entre riegos");
+        areca.setLuz("Luz indirecta brillante");
+        areca.setTemperatura("18-24°C");
+        areca.setCuidados("Humedad ambiental media-alta, evitar corrientes");
+        areca.setToxicidad("No tóxica");
+        areca.setCrecimiento("Moderado a lento");
+        areca.setPropagacion("Por división de hijuelos");
+        plantasList.add(areca);
+
+// Anturio
+        Planta anturio = new Planta();
+        anturio.setNombre("Anturio");
+        anturio.setNombreCientifico("Anthurium andraeanum");
+        anturio.setDescripcion("Planta tropical con llamativas flores en forma de corazón de color rojo brillante y hojas grandes de color verde oscuro.");
+        anturio.setImagenResourceId(R.drawable.anturio);
+        anturio.setFamilia("Araceae");
+        anturio.setGenero("Anthurium");
+        anturio.setRiego("Riego moderado, dejar secar ligeramente entre riegos");
+        anturio.setLuz("Luz indirecta brillante");
+        anturio.setTemperatura("20-28°C");
+        anturio.setCuidados("Alta humedad ambiental, limpiar hojas regularmente");
+        anturio.setToxicidad("Tóxica para mascotas y humanos");
+        anturio.setCrecimiento("Lento a moderado");
+        anturio.setPropagacion("Por división o esquejes con raíces");
+        plantasList.add(anturio);
+
+// Planta del Dinero
+        Planta planta_dinero = new Planta();
+        planta_dinero.setNombre("Planta del Dinero");
+        planta_dinero.setNombreCientifico("Crassula argentea");
+        planta_dinero.setDescripcion("Suculenta de hojas carnosas, redondas y gruesas que se asemejan a monedas. Se le atribuyen propiedades de buena suerte y prosperidad.");
+        planta_dinero.setImagenResourceId(R.drawable.planta_dinero);
+        planta_dinero.setFamilia("Crassulaceae");
+        planta_dinero.setGenero("Crassula");
+        planta_dinero.setRiego("Riego escaso, dejar secar completamente entre riegos");
+        planta_dinero.setLuz("Luz directa o indirecta brillante");
+        planta_dinero.setTemperatura("15-26°C");
+        planta_dinero.setCuidados("Sustrato bien drenado, poca agua en invierno");
+        planta_dinero.setToxicidad("No tóxica");
+        planta_dinero.setCrecimiento("Lento");
+        planta_dinero.setPropagacion("Por esquejes de hoja o tallo");
+        plantasList.add(planta_dinero);
+
+// Lavanda
+        Planta lavanda = new Planta();
+        lavanda.setNombre("Lavanda");
+        lavanda.setNombreCientifico("Lavandula angustifolia");
+        lavanda.setDescripcion("Planta aromática con flores púrpuras y follaje grisáceo, conocida por su fragancia relajante y propiedades medicinales.");
+        lavanda.setImagenResourceId(R.drawable.lavanda);
+        lavanda.setFamilia("Lamiaceae");
+        lavanda.setGenero("Lavandula");
+        lavanda.setRiego("Riego escaso, tolerante a la sequía");
+        lavanda.setLuz("Luz directa, pleno sol");
+        lavanda.setTemperatura("15-30°C");
+        lavanda.setCuidados("Sustrato bien drenado, poda anual");
+        lavanda.setToxicidad("No tóxica para humanos, puede ser tóxica para mascotas");
+        lavanda.setCrecimiento("Moderado");
+        lavanda.setPropagacion("Por esquejes o semillas");
+        plantasList.add(lavanda);
+
+// Planta Araña
+        Planta arana = new Planta();
+        arana.setNombre("Planta Araña");
+        arana.setNombreCientifico("Chlorophytum comosum");
+        arana.setDescripcion("Planta muy resistente con hojas arqueadas verdes o variegadas que produce pequeñas 'plántulas' en sus tallos colgantes.");
+        arana.setImagenResourceId(R.drawable.planta_arana);
+        arana.setFamilia("Asparagaceae");
+        arana.setGenero("Chlorophytum");
+        arana.setRiego("Riego moderado, dejar secar ligeramente entre riegos");
+        arana.setLuz("Luz indirecta a semisombra");
+        arana.setTemperatura("13-27°C");
+        arana.setCuidados("Tolera condiciones variadas, ideal para principiantes");
+        arana.setToxicidad("No tóxica, segura para mascotas");
+        arana.setCrecimiento("Moderado a rápido");
+        arana.setPropagacion("Por hijuelos o división");
+        plantasList.add(arana);
+
+
+
         // Actualizar UI
         plantaAdapter.notifyDataSetChanged();
         rvPlantas.setVisibility(View.VISIBLE);
@@ -340,60 +444,7 @@ public class EnciclopediaActivity extends AppCompatActivity implements PlantaAda
         isLastPage = true;
         isLoading = false;
         progressBar.setVisibility(View.GONE);
-        // --- Fin: Datos de Ejemplo ---
 
-        /* // --- Código Original de la API (Comentado temporalmente) ---
-        apiService.getPlants(API_KEY, currentPage).enqueue(new Callback<TrefleSearchResponse>() {
-            @Override
-            public void onResponse(Call<TrefleSearchResponse> call, Response<TrefleSearchResponse> response) {
-                isLoading = false;
-                progressBar.setVisibility(View.GONE);
-                
-                if (response.isSuccessful() && response.body() != null) {
-                    TrefleSearchResponse searchResponse = response.body();
-                    List<TreflePlant> treflePlants = searchResponse.getData();
-                    
-                    if (treflePlants != null && !treflePlants.isEmpty()) {
-                        // Limitar a las primeras 10 plantas
-                        int limit = Math.min(treflePlants.size(), 10);
-                        for (int i = 0; i < limit; i++) {
-                            TreflePlant treflePlant = treflePlants.get(i);
-                            Planta planta = convertirTreflePlantAPlanta(treflePlant);
-                            plantasList.add(planta);
-                        }
-                        
-                        plantaAdapter.notifyDataSetChanged();
-                        rvPlantas.setVisibility(View.VISIBLE);
-                        tvEmptyState.setVisibility(View.GONE);
-                        
-                        // No cargar más páginas
-                        isLastPage = true;
-                    } else {
-                        mostrarMensajeVacio("No se encontraron plantas");
-                    }
-                } else {
-                    String errorBody = "";
-                    try {
-                        if (response.errorBody() != null) {
-                            errorBody = response.errorBody().string();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    String error = "Error al cargar las plantas: " + response.code() + 
-                        " " + response.message() + "\n" + errorBody;
-                    mostrarError(error);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TrefleSearchResponse> call, Throwable t) {
-                isLoading = false;
-                progressBar.setVisibility(View.GONE);
-                mostrarError("Error de conexión: " + t.getMessage());
-            }
-        });
-        */ // --- Fin Código Original ---
     }
     
     private void buscarPlantasEnAPI(String query) {
@@ -429,176 +480,6 @@ public class EnciclopediaActivity extends AppCompatActivity implements PlantaAda
         
         isLoading = false;
         progressBar.setVisibility(View.GONE);
-    }
-    
-    private Planta convertirTreflePlantAPlanta(TreflePlant treflePlant) {
-        Planta planta = new Planta();
-        
-        // Set basic information
-        planta.setNombre(treflePlant.getCommonName() != null ? treflePlant.getCommonName() : "Sin nombre común");
-        planta.setNombreCientifico(treflePlant.getScientificName() != null ? treflePlant.getScientificName() : "Sin nombre científico");
-        
-        // Set description
-        StringBuilder descripcion = new StringBuilder();
-        if (treflePlant.getDescription() != null) {
-            descripcion.append("Description: ").append(treflePlant.getDescription());
-        }
-        if (treflePlant.getPlantingDescription() != null) {
-            if (descripcion.length() > 0) descripcion.append("\n\n");
-            descripcion.append("Planting: ").append(treflePlant.getPlantingDescription());
-        }
-        if (descripcion.length() == 0) {
-            descripcion.append("Sin descripción disponible");
-        }
-        planta.setDescripcion(descripcion.toString().trim());
-        
-        // Set family information
-        String familia = "Desconocida";
-        if (treflePlant.getFamily() != null) {
-            familia = treflePlant.getFamily();
-            if (treflePlant.getFamilyCommonName() != null) {
-                familia += " (" + treflePlant.getFamilyCommonName() + ")";
-            }
-        }
-        planta.setFamilia(familia);
-        
-        // Set genus
-        planta.setGenero(treflePlant.getGenus() != null ? treflePlant.getGenus() : "Desconocido");
-        
-        // Set watering information based on soil humidity
-        StringBuilder riego = new StringBuilder();
-        if (treflePlant.getSoilHumidity() != null) {
-            riego.append("Soil humidity level: ").append(treflePlant.getSoilHumidity()).append("/10");
-        }
-        if (treflePlant.getAtmosphericHumidity() != null) {
-            if (riego.length() > 0) riego.append("\n");
-            riego.append("Atmospheric humidity: ").append(treflePlant.getAtmosphericHumidity()).append("/10");
-        }
-        planta.setRiego(riego.length() > 0 ? riego.toString() : "Desconocido");
-        
-        // Set light information
-        StringBuilder luz = new StringBuilder();
-        if (treflePlant.getLight() != null) {
-            luz.append("Light requirement: ").append(treflePlant.getLight()).append("/10");
-            luz.append(" (0 = no light, 10 = very intensive sunlight)");
-        }
-        planta.setLuz(luz.length() > 0 ? luz.toString() : "Desconocido");
-        
-        // Set temperature information
-        StringBuilder temperatura = new StringBuilder();
-        if (treflePlant.getMinimumTemperature() != null && treflePlant.getMinimumTemperature().getCelsius() != null) {
-            temperatura.append("Minimum: ").append(treflePlant.getMinimumTemperature().getCelsius()).append("°C");
-        }
-        if (treflePlant.getMaximumTemperature() != null && treflePlant.getMaximumTemperature().getCelsius() != null) {
-            if (temperatura.length() > 0) temperatura.append("\n");
-            temperatura.append("Maximum: ").append(treflePlant.getMaximumTemperature().getCelsius()).append("°C");
-        }
-        planta.setTemperatura(temperatura.length() > 0 ? temperatura.toString() : "Información no disponible");
-        
-        // Set care instructions
-        StringBuilder cuidados = new StringBuilder();
-        if (treflePlant.getPlantingDescription() != null) {
-            cuidados.append("Planting instructions: ").append(treflePlant.getPlantingDescription()).append("\n\n");
-        }
-        if (treflePlant.getSowingDescription() != null) {
-            cuidados.append("Sowing instructions: ").append(treflePlant.getSowingDescription()).append("\n\n");
-        }
-        if (treflePlant.getEdible() != null) {
-            cuidados.append("Edible: ").append(treflePlant.getEdible() ? "Yes" : "No");
-            if (treflePlant.getEdibleParts() != null && !treflePlant.getEdibleParts().isEmpty()) {
-                cuidados.append("\nEdible parts: ").append(String.join(", ", treflePlant.getEdibleParts()));
-            }
-            cuidados.append("\n\n");
-        }
-        planta.setCuidados(cuidados.length() > 0 ? cuidados.toString().trim() : "No care information available");
-        
-        // Set growth information
-        StringBuilder crecimiento = new StringBuilder();
-        if (treflePlant.getGrowthRate() != null) {
-            crecimiento.append("Growth rate: ").append(treflePlant.getGrowthRate()).append("\n");
-        }
-        if (treflePlant.getGrowthForm() != null) {
-            crecimiento.append("Growth form: ").append(treflePlant.getGrowthForm()).append("\n");
-        }
-        if (treflePlant.getGrowthHabit() != null) {
-            crecimiento.append("Growth habit: ").append(treflePlant.getGrowthHabit()).append("\n");
-        }
-        if (treflePlant.getGrowthMonths() != null && !treflePlant.getGrowthMonths().isEmpty()) {
-            crecimiento.append("Growth months: ").append(String.join(", ", treflePlant.getGrowthMonths())).append("\n");
-        }
-        if (treflePlant.getBloomMonths() != null && !treflePlant.getBloomMonths().isEmpty()) {
-            crecimiento.append("Bloom months: ").append(String.join(", ", treflePlant.getBloomMonths())).append("\n");
-        }
-        if (treflePlant.getFruitMonths() != null && !treflePlant.getFruitMonths().isEmpty()) {
-            crecimiento.append("Fruit months: ").append(String.join(", ", treflePlant.getFruitMonths()));
-        }
-        planta.setCrecimiento(crecimiento.length() > 0 ? crecimiento.toString() : "No growth information available");
-        
-        // Set propagation information
-        StringBuilder propagacion = new StringBuilder();
-        if (treflePlant.getSowingDescription() != null) {
-            propagacion.append("Sowing method: ").append(treflePlant.getSowingDescription());
-        }
-        planta.setPropagacion(propagacion.length() > 0 ? propagacion.toString() : "No propagation information available");
-        
-        // Set toxicity information
-        StringBuilder toxicidad = new StringBuilder();
-        if (treflePlant.getToxicity() != null) {
-            toxicidad.append("Toxicity level: ").append(treflePlant.getToxicity());
-        }
-        planta.setToxicidad(toxicidad.length() > 0 ? toxicidad.toString() : "No toxicity information available");
-        
-        // Set diseases and pests information
-        planta.setEnfermedades("Disease information not available in Trefle API");
-        planta.setPlagas("Pest information not available in Trefle API");
-        
-        // Set known problems
-        StringBuilder problemas = new StringBuilder();
-        if (treflePlant.getAdaptedToCoarseTexturedSoils() != null) {
-            problemas.append("Adapted to coarse textured soils: ").append(treflePlant.getAdaptedToCoarseTexturedSoils()).append("\n");
-        }
-        if (treflePlant.getAdaptedToFineTexturedSoils() != null) {
-            problemas.append("Adapted to fine textured soils: ").append(treflePlant.getAdaptedToFineTexturedSoils()).append("\n");
-        }
-        if (treflePlant.getAdaptedToMediumTexturedSoils() != null) {
-            problemas.append("Adapted to medium textured soils: ").append(treflePlant.getAdaptedToMediumTexturedSoils());
-        }
-        planta.setProblemasConocidos(problemas.length() > 0 ? problemas.toString() : "No known problems information available");
-        
-        // Set planting instructions
-        StringBuilder instrucciones = new StringBuilder();
-        if (treflePlant.getPlantingDescription() != null) {
-            instrucciones.append(treflePlant.getPlantingDescription()).append("\n");
-        }
-        if (treflePlant.getMinimumPrecipitation() != null && treflePlant.getMinimumPrecipitation().getValue() != null) {
-            instrucciones.append("Minimum precipitation required: ")
-                .append(treflePlant.getMinimumPrecipitation().getValue())
-                .append(" ")
-                .append(treflePlant.getMinimumPrecipitation().getUnit())
-                .append("/year\n");
-        }
-        if (treflePlant.getMaximumPrecipitation() != null && treflePlant.getMaximumPrecipitation().getValue() != null) {
-            instrucciones.append("Maximum precipitation tolerance: ")
-                .append(treflePlant.getMaximumPrecipitation().getValue())
-                .append(" ")
-                .append(treflePlant.getMaximumPrecipitation().getUnit())
-                .append("/year\n");
-        }
-        if (treflePlant.getMinimumRootDepth() != null && treflePlant.getMinimumRootDepth().getValue() != null) {
-            instrucciones.append("Minimum root depth required: ")
-                .append(treflePlant.getMinimumRootDepth().getValue())
-                .append(" ")
-                .append(treflePlant.getMinimumRootDepth().getUnit());
-        }
-        planta.setInstruccionesCuidado(instrucciones.length() > 0 ? instrucciones.toString() : "No care instructions available");
-        
-        // Set image URL
-        planta.setImageUrl(treflePlant.getImageUrl());
-        
-        // Set Trefle ID for future reference
-        planta.setPerenualId(treflePlant.getId());
-        
-        return planta;
     }
     
     private void mostrarMensajeVacio(String mensaje) {

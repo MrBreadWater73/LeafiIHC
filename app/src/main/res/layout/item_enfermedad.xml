@@ -16,8 +16,8 @@
         <ImageView
             android:id="@+id/ivEnfermedad"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
+            android:layout_height="300dp"
+            android:scaleType="centerInside"
             android:src="@drawable/ic_encyclopedia" />
 
         <TextView

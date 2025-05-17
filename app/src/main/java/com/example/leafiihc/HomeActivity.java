@@ -17,7 +17,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private LinearLayout llAreasVerdes, llEnciclopedia, llConsejos;
+    private LinearLayout llAreasVerdes, llEnciclopedia, llConsejos, llComunidad;
     private BottomNavigationView bottomNavBar;
 
     @Override
@@ -30,6 +30,7 @@ public class HomeActivity extends AppCompatActivity {
         llAreasVerdes = findViewById(R.id.llAreasVerdes);
         llEnciclopedia = findViewById(R.id.llEnciclopedia);
         llConsejos = findViewById(R.id.llConsejos);
+        llComunidad = findViewById(R.id.llComunidad);
         bottomNavBar = findViewById(R.id.bottomNavBar);
 
         // Configurar BottomNavigationView
@@ -45,6 +46,11 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.navigation_profile) {
                 Intent intent = new Intent(HomeActivity.this, PerfilUsuarioActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            } else if (itemId == R.id.navigation_community) {
+                Intent intent = new Intent(HomeActivity.this, ComunidadActivity.class);
                 startActivity(intent);
                 finish();
                 return true;
@@ -72,6 +78,11 @@ public class HomeActivity extends AppCompatActivity {
 
         llConsejos.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, ConsejosActivity.class);
+            startActivity(intent);
+        });
+
+        llComunidad.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, ComunidadActivity.class);
             startActivity(intent);
         });
 

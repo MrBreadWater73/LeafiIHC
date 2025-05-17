@@ -27,7 +27,7 @@ public class AreasVerdesActivity extends AppCompatActivity {
 
     private EditText etCodigo;
     private ImageView ivClear, ivHome;
-    private Button btnIngresar, btnVerAreas, btnEscanearQR;
+    private Button btnIngresar, btnVerAreas;
     private CircleImageView ivUserAvatar;
     private RecyclerView rvAreasVerdes;
     private TextView tvSinAreas;
@@ -58,7 +58,7 @@ public class AreasVerdesActivity extends AppCompatActivity {
         ivClear = findViewById(R.id.ivClear);
         btnIngresar = findViewById(R.id.btnIngresar);
         btnVerAreas = findViewById(R.id.btnVerAreas);
-        btnEscanearQR = findViewById(R.id.btnEscanearQR);
+
         ivHome = findViewById(R.id.ivHome);
         ivUserAvatar = findViewById(R.id.ivUserAvatar);
         rvAreasVerdes = findViewById(R.id.rvAreasVerdes);
@@ -98,11 +98,6 @@ public class AreasVerdesActivity extends AppCompatActivity {
                 tvSinAreas.setVisibility(View.GONE);
                 rvAreasVerdes.setVisibility(View.VISIBLE);
             }
-        });
-
-        btnEscanearQR.setOnClickListener(v -> {
-            // TODO: Implementar escaneo de QR
-            Toast.makeText(this, "Funcionalidad de escaneo QR en desarrollo", Toast.LENGTH_SHORT).show();
         });
 
         ivHome.setOnClickListener(v -> {
