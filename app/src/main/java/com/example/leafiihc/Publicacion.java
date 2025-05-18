@@ -1,56 +1,44 @@
 package com.example.leafiihc;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Publicacion {
-    private String usuario;
+    private String autor;
     private String titulo;
     private String contenido;
     private Date fecha;
     private int likes;
     private int comentarios;
-    private String imagenUrl;
+    private boolean meGusta;
+    private List<Comentario> listaComentarios;
 
-    public Publicacion(String usuario, String titulo, String contenido, Date fecha) {
-        this.usuario = usuario;
+    public Publicacion(String autor, String titulo, String contenido, Date fecha) {
+        this.autor = autor;
         this.titulo = titulo;
         this.contenido = contenido;
         this.fecha = fecha;
         this.likes = 0;
         this.comentarios = 0;
-        this.imagenUrl = null;
+        this.meGusta = false;
+        this.listaComentarios = new ArrayList<>();
     }
 
-    public String getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
+    public String getAutor() {
+        return autor;
     }
 
     public String getTitulo() {
         return titulo;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
     public String getContenido() {
         return contenido;
     }
 
-    public void setContenido(String contenido) {
-        this.contenido = contenido;
-    }
-
     public Date getFecha() {
         return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
     }
 
     public int getLikes() {
@@ -69,11 +57,25 @@ public class Publicacion {
         this.comentarios = comentarios;
     }
 
-    public String getImagenUrl() {
-        return imagenUrl;
+    public boolean isMeGusta() {
+        return meGusta;
     }
 
-    public void setImagenUrl(String imagenUrl) {
-        this.imagenUrl = imagenUrl;
+    public void setMeGusta(boolean meGusta) {
+        this.meGusta = meGusta;
+    }
+
+    public List<Comentario> getListaComentarios() {
+        return listaComentarios;
+    }
+
+    public void agregarComentario(Comentario comentario) {
+        listaComentarios.add(comentario);
+        comentarios++;
+    }
+
+    public void toggleMeGusta() {
+        meGusta = !meGusta;
+        likes += meGusta ? 1 : -1;
     }
 }

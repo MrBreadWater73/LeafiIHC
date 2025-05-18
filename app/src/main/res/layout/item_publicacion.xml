@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
+    android:layout_marginBottom="8dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,20 +14,19 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Cabecera de la publicación -->
+        <!-- Encabezado de la publicación -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/ivPublicacionAvatar"
+            <ImageView
+                android:id="@+id/ivAvatar"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_user"
-                app:civ_border_color="#EEEEEE"
-                app:civ_border_width="1dp" />
+                android:src="@drawable/ic_person"
+                android:contentDescription="Avatar del usuario" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -36,131 +36,99 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tvPublicacionUsuario"
+                    android:id="@+id/tvAutor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Usuario"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="María García" />
 
                 <TextView
-                    android:id="@+id/tvPublicacionFecha"
+                    android:id="@+id/tvFecha"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hace 2 horas"
                     android:textColor="#757575"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    tools:text="Hace 2 horas" />
             </LinearLayout>
-
-            <ImageView
-                android:id="@+id/ivPublicacionMenu"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_more"
-                app:tint="#757575" />
         </LinearLayout>
 
         <!-- Contenido de la publicación -->
         <TextView
-            android:id="@+id/tvPublicacionTitulo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Título de la publicación"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvPublicacionContenido"
+            android:id="@+id/tvTitulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Contenido de la publicación..."
-            android:textColor="#333333"
-            android:textSize="14sp" />
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="Mis tomates están creciendo muy bien" />
 
-        <ImageView
-            android:id="@+id/ivPublicacionImagen"
+        <TextView
+            android:id="@+id/tvContenido"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="12dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_encyclopedia"
-            android:visibility="gone" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#424242"
+            android:textSize="14sp"
+            tools:text="Después de seguir los consejos de abono natural..." />
 
-        <!-- Acciones de la publicación -->
+        <!-- Botones de interacción -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/llPublicacionLike"
+            <ImageButton
+                android:id="@+id/btnLike"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Me gusta"
+                android:padding="8dp"
+                android:src="@drawable/ic_like_red" />
 
-                <ImageView
-                    android:id="@+id/ivPublicacionLike"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_like"
-                    app:tint="#757575" />
-
-                <TextView
-                    android:id="@+id/tvPublicacionLikes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="12"
-                    android:textColor="#757575"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llPublicacionComment"
+            <TextView
+                android:id="@+id/tvLikes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="4dp"
+                android:textColor="#757575"
+                android:textSize="14sp"
+                tools:text="15" />
 
-                <ImageView
-                    android:id="@+id/ivPublicacionComment"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_comment"
-                    app:tint="#757575" />
-
-                <TextView
-                    android:id="@+id/tvPublicacionComments"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="5"
-                    android:textColor="#757575"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llPublicacionShare"
+            <ImageButton
+                android:id="@+id/btnComentar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_marginStart="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Comentar"
+                android:padding="8dp"
+                android:src="@drawable/ic_comment" />
 
-                <ImageView
-                    android:id="@+id/ivPublicacionShare"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_share"
-                    app:tint="#757575" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tvComentarios"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="4dp"
+                android:textColor="#757575"
+                android:textSize="14sp"
+                tools:text="3" />
+
+            <ImageButton
+                android:id="@+id/btnCompartir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Compartir"
+                android:padding="8dp"
+                android:src="@drawable/ic_share" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
