@@ -84,6 +84,8 @@ Las contribuciones son bienvenidas. Por favor, sigue estos pasos:
 5. Abre un Pull Request
 
 ## Desarrollada por: 
-Diego Alejandro Guzmán Paniagua
-Diego Alejandro Orozco Sánchez
-Francisco Castillo Ortiz
+-Diego Alejandro Guzmán Paniagua
+
+-Diego Alejandro Orozco Sánchez
+
+-Francisco Castillo Ortiz
