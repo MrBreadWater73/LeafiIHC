@@ -1,4 +1,4 @@
-# Leafi - Tu Compañero Verde
+# Leafi - Hackatrhon Sustainability in smart universities 2025 A
 
 ## Descripción
 Leafi es una aplicación móvil diseñada para ayudar a los usuarios a gestionar y cuidar sus plantas, así como conectar con una comunidad de amantes de la jardinería. La aplicación ofrece una experiencia completa para el cuidado de plantas, desde la identificación hasta el seguimiento de tareas y la interacción con otros usuarios.
@@ -83,13 +83,7 @@ Las contribuciones son bienvenidas. Por favor, sigue estos pasos:
 4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
 
-## Licencia
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
-## Contacto
-Para soporte o consultas, por favor contacta al equipo de desarrollo a través de:
-- Email: [tu-email@dominio.com]
-- GitHub: [tu-usuario-github]
-
----
-Desarrollado con ❤️ por el equipo Leafi
+## Desarrollada por: 
+Diego Alejandro Guzmán Paniagua
+Diego Alejandro Orozco Sánchez
+Francisco Castillo Ortiz
